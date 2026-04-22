@@ -1,3 +1,4 @@
+// D:\Personal App\Seline Porto NextJS ExpressJS\backend_project\src\migrations\2_create_comments.js
 export const up = async function (knex) {
   await knex.schema.createTable("tb_comment", (table) => {
     table.increments("IDCOMMENT").primary();
@@ -17,12 +18,6 @@ export const up = async function (knex) {
     
     table.timestamp("CREATED_AT").defaultTo(knex.fn.now());
     table.timestamp("UPDATED_AT").defaultTo(knex.fn.now());
-  });
-
-  await knex("tb_comment").insert({
-    IDUSER: 1,
-    COMMENT: "Web portofolionya keren banget, desain ungunya dapet banget!",
-    RATING: "10", 
   });
 };
 

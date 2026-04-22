@@ -1,3 +1,4 @@
+// D:\Personal App\Seline Porto NextJS ExpressJS\backend_project\knexfile.js
 import dotenv from 'dotenv';
 
 dotenv.config();

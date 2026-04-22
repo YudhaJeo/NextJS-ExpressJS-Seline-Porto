@@ -1,3 +1,4 @@
+// D:\Personal App\Seline Porto NextJS ExpressJS\backend_project\src\models\commentModel.js
 import db from '../core/config/knex.js';
 
 export const getAll = () => {

@@ -1,3 +1,4 @@
+// D:\Personal App\Seline Porto NextJS ExpressJS\backend_project\src\controllers\commentController.js
 import * as Comment from '../models/commentModel.js';
 
 export async function getAllComment(req, res) {
