@@ -1,323 +1,404 @@
-// D:\Personal App\Seline Porto NextJS ExpressJS\frontend_project\components\HeroSection.tsx
+// components/HeroSection.tsx
 "use client";
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { commentAPI, getUser, getToken, type Comment } from "@/lib/api";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
-// ---------- Star Rating ----------
-function StarRating({ value, onChange }: { value: number; onChange?: (v: number) => void }) {
-  return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <button
-          key={star}
-          type="button"
-          onClick={() => onChange?.(star)}
-          className={`text-lg transition-colors ${
-            star <= value ? "text-yellow-400" : "text-purple-800"
-          } ${onChange ? "hover:text-yellow-300 cursor-pointer" : "cursor-default"}`}
-        >
-          ★
-        </button>
-      ))}
-    </div>
-  );
-}
+const TAGLINE = "BUILDING WORLDS WITH CODE, ART, AND IMAGINATION";
 
-// Rating backend 1-10 → tampilan bintang 1-5
-const toStars = (r: string | number) => Math.round(Number(r) / 2);
-const fromStars = (s: number) => s * 2; // stars 1-5 → rating 2,4,6,8,10
+export default function HeroSection() {
+  const [displayed, setDisplayed] = useState("");
+  const [cursor,    setCursor]    = useState(true);
+  const idxRef = useRef(0);
 
-export default function CommentSection() {
-  const router = useRouter();
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  // New comment
-  const [newText, setNewText] = useState("");
-  const [newStars, setNewStars] = useState(5);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-
-  // Edit
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editText, setEditText] = useState("");
-  const [editStars, setEditStars] = useState(5);
-  const [editSubmitting, setEditSubmitting] = useState(false);
-
-  const user = getUser();
-  const isLoggedIn = !!getToken();
-
-  // ---------- Fetch comments ----------
-  const fetchComments = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const res = await commentAPI.getAll();
-      setComments(res.data.data || []);
-    } catch {
-      setError("Gagal memuat komentar. Pastikan backend berjalan.");
-    } finally {
-      setLoading(false);
-    }
+  // Typewriter for tagline
+  useEffect(() => {
+    const iv = setInterval(() => {
+      if (idxRef.current < TAGLINE.length) {
+        setDisplayed(TAGLINE.slice(0, idxRef.current + 1));
+        idxRef.current++;
+      } else {
+        clearInterval(iv);
+      }
+    }, 55);
+    return () => clearInterval(iv);
   }, []);
 
   useEffect(() => {
-    fetchComments();
-    // Re-fetch kalau auth berubah
-    window.addEventListener("authChange", fetchComments);
-    return () => window.removeEventListener("authChange", fetchComments);
-  }, [fetchComments]);
-
-  // ---------- Submit new comment ----------
-  const handleSubmit = async () => {
-    if (!isLoggedIn) {
-      router.push("/login");
-      return;
-    }
-    if (!newText.trim()) {
-      setSubmitError("Komentar tidak boleh kosong");
-      return;
-    }
-    setSubmitting(true);
-    setSubmitError("");
-    try {
-      await commentAPI.create(newText.trim(), fromStars(newStars));
-      setNewText("");
-      setNewStars(5);
-      await fetchComments();
-    } catch (err: unknown) {
-      setSubmitError(err instanceof Error ? err.message : "Gagal mengirim komentar");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // ---------- Delete ----------
-  const handleDelete = async (id: number) => {
-    if (!confirm("Hapus komentar ini?")) return;
-    try {
-      await commentAPI.remove(id);
-      await fetchComments();
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal menghapus");
-    }
-  };
-
-  // ---------- Edit ----------
-  const startEdit = (c: Comment) => {
-    setEditingId(c.IDCOMMENT);
-    setEditText(c.COMMENT);
-    setEditStars(toStars(c.RATING));
-  };
-
-  const saveEdit = async () => {
-    if (!editText.trim() || editingId === null) return;
-    setEditSubmitting(true);
-    try {
-      await commentAPI.update(editingId, editText.trim(), fromStars(editStars));
-      setEditingId(null);
-      await fetchComments();
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Gagal menyimpan");
-    } finally {
-      setEditSubmitting(false);
-    }
-  };
-
-  // Format date
-  const formatDate = (iso: string) => {
-    try {
-      return new Date(iso).toLocaleDateString("id-ID", {
-        day: "numeric", month: "short", year: "numeric",
-      });
-    } catch {
-      return "";
-    }
-  };
+    const iv = setInterval(() => setCursor((v) => !v), 600);
+    return () => clearInterval(iv);
+  }, []);
 
   return (
-    <section className="relative z-10 py-20 px-6 pb-32">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <p className="text-purple-400 text-sm tracking-widest uppercase font-semibold mb-2">Guest Book</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-white">Komentar</h2>
-          <div className="mt-4 h-1 w-16 bg-gradient-to-r from-purple-500 to-violet-400 mx-auto rounded-full" />
+    <section
+      id="home"
+      style={{
+        minHeight:     "100vh",
+        display:       "flex",
+        alignItems:    "center",
+        padding:       "80px 24px 0",
+        position:      "relative",
+        overflow:      "hidden",
+      }}
+    >
+      {/* Background grid */}
+      <div
+        aria-hidden
+        style={{
+          position:   "absolute",
+          inset:      0,
+          backgroundImage: `
+            linear-gradient(rgba(157,78,221,0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(157,78,221,0.05) 1px, transparent 1px)
+          `,
+          backgroundSize: "40px 40px",
+          zIndex:     0,
+        }}
+      />
+
+      {/* Radial glow */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          top:      "30%",
+          left:     "55%",
+          width:    "600px",
+          height:   "600px",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(157,78,221,0.15) 0%, transparent 70%)",
+          transform: "translate(-50%,-50%)",
+          zIndex:   0,
+          pointerEvents: "none",
+        }}
+      />
+
+      <div
+        style={{
+          maxWidth:  "1100px",
+          margin:    "0 auto",
+          width:     "100%",
+          display:   "flex",
+          flexWrap:  "wrap",
+          alignItems: "center",
+          gap:       "48px",
+          position:  "relative",
+          zIndex:    3,
+        }}
+      >
+        {/* ── LEFT TEXT ── */}
+        <div style={{ flex: "1 1 400px", minWidth: "300px" }}>
+          {/* Status chip */}
+          <div
+            style={{
+              display:    "inline-flex",
+              alignItems: "center",
+              gap:        "8px",
+              padding:    "6px 14px",
+              background: "rgba(60,9,108,0.4)",
+              border:     "1px solid rgba(157,78,221,0.5)",
+              borderRadius: "2px",
+              marginBottom: "28px",
+            }}
+          >
+            <span
+              style={{
+                width:     "6px",
+                height:    "6px",
+                background: "#7efff5",
+                boxShadow: "0 0 8px #7efff5",
+                borderRadius: "50%",
+                animation: "pulse 2s ease-in-out infinite",
+              }}
+            />
+            <span
+              style={{
+                fontFamily:  "var(--font-pixel)",
+                fontSize:    "0.45rem",
+                color:       "#7efff5",
+                letterSpacing: "0.15em",
+                textShadow:  "0 0 8px #7efff5",
+              }}
+            >
+              AVAILABLE FOR COLLAB
+            </span>
+          </div>
+
+          {/* Name */}
+          <div style={{ marginBottom: "12px" }}>
+            <div
+              style={{
+                fontFamily:  "var(--font-pixel)",
+                fontSize:    "clamp(0.6rem, 2vw, 0.85rem)",
+                color:       "#9b7fbf",
+                letterSpacing: "0.25em",
+                marginBottom: "8px",
+              }}
+            >
+              HELLO, I'M
+            </div>
+            <h1
+              className="glitch-wrap"
+              data-text="JESSELINE"
+              style={{
+                fontFamily:  "var(--font-pixel)",
+                fontSize:    "clamp(1.6rem, 5vw, 3rem)",
+                color:       "#fff",
+                lineHeight:  1.4,
+                display:     "block",
+                textShadow:  "0 0 20px #c77dff, 0 0 50px rgba(157,78,221,0.5), 3px 3px 0 #3c096c",
+                letterSpacing: "0.05em",
+              }}
+            >
+              JESSELINE
+            </h1>
+            <h2
+              style={{
+                fontFamily:  "var(--font-pixel)",
+                fontSize:    "clamp(1rem, 3vw, 1.6rem)",
+                color:       "#c77dff",
+                lineHeight:  1.6,
+                textShadow:  "0 0 15px rgba(199,125,255,0.7)",
+                letterSpacing: "0.08em",
+              }}
+            >
+              RONIAR
+            </h2>
+          </div>
+
+          {/* Tagline typewriter */}
+          <div
+            style={{
+              fontFamily:  "var(--font-mono)",
+              fontSize:    "clamp(0.65rem, 1.5vw, 0.85rem)",
+              color:       "#9b7fbf",
+              marginBottom: "28px",
+              letterSpacing: "0.08em",
+              minHeight:   "1.5em",
+            }}
+          >
+            <span style={{ color: "#7efff5" }}>&gt; </span>
+            {displayed}
+            {cursor && (
+              <span
+                style={{
+                  display:    "inline-block",
+                  width:      "8px",
+                  height:     "1em",
+                  background: "#c77dff",
+                  marginLeft: "2px",
+                  verticalAlign: "text-bottom",
+                  boxShadow:  "0 0 8px #9d4edd",
+                }}
+              />
+            )}
+          </div>
+
+          {/* Bio */}
+          <p
+            style={{
+              fontFamily:  "var(--font-body)",
+              fontSize:    "1rem",
+              color:       "#b89fd4",
+              lineHeight:  1.8,
+              marginBottom: "36px",
+              maxWidth:    "480px",
+              borderLeft:  "2px solid rgba(157,78,221,0.5)",
+              paddingLeft: "16px",
+            }}
+          >
+            Hi! I'm Jess, a PPLG student specializing in game development and web programming.
+            I combine technical skills with a creative visual side to build engaging digital experiences.
+          </p>
+
+          {/* CTA Buttons */}
+          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+            <a
+              href="#about"
+              className="btn-pixel"
+              style={{
+                display:     "inline-block",
+                padding:     "12px 24px",
+                background:  "rgba(157,78,221,0.3)",
+                border:      "1px solid #9d4edd",
+                borderRadius: "2px",
+                color:       "#fff",
+                textDecoration: "none",
+                fontFamily:  "var(--font-pixel)",
+                fontSize:    "0.5rem",
+                letterSpacing: "0.1em",
+                boxShadow:   "0 0 20px rgba(157,78,221,0.3)",
+                transition:  "all 0.2s",
+              }}
+            >
+              ▼ ABOUT ME
+            </a>
+            <a
+              href="/skills"
+              className="btn-pixel"
+              style={{
+                display:     "inline-block",
+                padding:     "12px 24px",
+                background:  "transparent",
+                border:      "1px solid rgba(157,78,221,0.4)",
+                borderRadius: "2px",
+                color:       "#c77dff",
+                textDecoration: "none",
+                fontFamily:  "var(--font-pixel)",
+                fontSize:    "0.5rem",
+                letterSpacing: "0.1em",
+                transition:  "all 0.2s",
+              }}
+            >
+              → CORE SKILLS
+            </a>
+          </div>
         </div>
 
-        {/* ---- Form komentar baru ---- */}
-        <div className="bg-purple-900/20 border border-purple-700/30 rounded-2xl p-6 mb-8">
-          {isLoggedIn ? (
-            <>
-              <p className="text-purple-300 text-sm font-semibold mb-1">
-                Tinggalkan komentar
-              </p>
-              <p className="text-purple-500 text-xs mb-4">
-                Login sebagai <span className="text-purple-300 font-medium">{user?.USERNAME}</span>
-              </p>
+        {/* ── RIGHT: PHOTO ── */}
+        <div
+          style={{
+            flex:       "0 0 auto",
+            position:   "relative",
+            display:    "flex",
+            justifyContent: "center",
+          }}
+        >
+          {/* Decorative pixel rings */}
+          <div
+            aria-hidden
+            style={{
+              position:  "absolute",
+              width:     "340px",
+              height:    "340px",
+              border:    "1px solid rgba(157,78,221,0.2)",
+              borderRadius: "50%",
+              top:       "50%",
+              left:      "50%",
+              transform: "translate(-50%,-50%)",
+              animation: "spin 20s linear infinite",
+            }}
+          />
+          <div
+            aria-hidden
+            style={{
+              position:  "absolute",
+              width:     "280px",
+              height:    "280px",
+              border:    "1px dashed rgba(199,125,255,0.15)",
+              borderRadius: "50%",
+              top:       "50%",
+              left:      "50%",
+              transform: "translate(-50%,-50%)",
+              animation: "spin 14s linear infinite reverse",
+            }}
+          />
 
-              <StarRating value={newStars} onChange={setNewStars} />
-
-              <textarea
-                className="mt-3 w-full bg-purple-950/50 border border-purple-700/40 rounded-xl px-4 py-3 text-white text-sm placeholder-purple-500 focus:outline-none focus:border-purple-500 resize-none"
-                rows={3}
-                placeholder="Tulis komentar kamu di sini..."
-                value={newText}
-                onChange={(e) => { setNewText(e.target.value); setSubmitError(""); }}
+          {/* Photo frame */}
+          <div
+            className="corner-box float"
+            style={{
+              width:      "390px",
+              height:     "480px",
+              position:   "relative",
+              background: "rgba(13,0,24,0.8)",
+              border:     "1px solid rgba(157,78,221,0.4)",
+              boxShadow:  "0 0 40px rgba(157,78,221,0.2), inset 0 0 20px rgba(157,78,221,0.05)",
+              overflow:   "hidden",
+              padding:    "6px",
+            }}
+          >
+            <span aria-hidden />
+            {/* Photo */}
+            <div
+              style={{
+                width:    "100%",
+                height:   "100%",
+                position: "relative",
+                overflow: "hidden",
+                background: "rgba(60,9,108,0.3)",
+                display:  "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Image
+                src="/Seline-Edited-1.PNG"
+                alt="Jesseline Roniar"
+                fill
+                style={{ objectFit: "cover", objectPosition: "center top" }}
+                priority
               />
+              {/* Purple tint overlay */}
+              <div
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  inset:    0,
+                  background: "linear-gradient(to top, rgba(60,9,108,0.6) 0%, transparent 50%)",
+                  pointerEvents: "none",
+                }}
+              />
+            </div>
 
-              {submitError && (
-                <p className="text-red-400 text-xs mt-1">{submitError}</p>
-              )}
-
-              <button
-                onClick={handleSubmit}
-                disabled={submitting}
-                className="mt-3 px-5 py-2 bg-purple-700 hover:bg-purple-600 disabled:bg-purple-900 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-full transition-colors"
-              >
-                {submitting ? "Mengirim..." : "Kirim"}
-              </button>
-            </>
-          ) : (
-            /* Not logged in prompt */
-            <div className="text-center py-4">
-              <p className="text-purple-300 text-sm mb-4">
-                Login untuk meninggalkan komentar
-              </p>
-              <div className="flex gap-3 justify-center">
-                <button
-                  onClick={() => router.push("/login")}
-                  className="px-5 py-2 bg-purple-700 hover:bg-purple-600 text-white text-sm font-semibold rounded-full transition-colors"
-                >
-                  Login
-                </button>
-                <button
-                  onClick={() => router.push("/register")}
-                  className="px-5 py-2 border border-purple-500 hover:border-purple-300 text-purple-300 hover:text-white text-sm font-semibold rounded-full transition-colors"
-                >
-                  Register
-                </button>
+            {/* Name tag on photo */}
+            <div
+              style={{
+                position:   "absolute",
+                bottom:     "12px",
+                left:       "12px",
+                right:      "12px",
+                background: "rgba(7,0,15,0.85)",
+                border:     "1px solid rgba(157,78,221,0.4)",
+                padding:    "8px 12px",
+                backdropFilter: "blur(4px)",
+              }}
+            >
+              <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.45rem", color: "#ff6ef7", letterSpacing: "0.1em", marginBottom: "3px" }}>
+                PLAYER_01
+              </div>
+              <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.8rem", color: "#c77dff" }}>
+                Jess // Game Dev
               </div>
             </div>
-          )}
+          </div>
         </div>
-
-        {/* ---- Comment list ---- */}
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <svg className="animate-spin w-8 h-8 text-purple-500" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-          </div>
-        ) : error ? (
-          <div className="text-center py-8">
-            <p className="text-red-400 text-sm mb-3">{error}</p>
-            <button
-              onClick={fetchComments}
-              className="px-4 py-2 border border-purple-700 hover:border-purple-500 text-purple-300 text-sm rounded-full transition-colors"
-            >
-              Coba lagi
-            </button>
-          </div>
-        ) : comments.length === 0 ? (
-          <div className="text-center py-12 text-purple-500 text-sm">
-            Belum ada komentar. Jadilah yang pertama! 💬
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-            {comments.map((c) => {
-              const isOwn = user?.IDUSER === c.IDUSER;
-              const stars = toStars(c.RATING);
-
-              return (
-                <div
-                  key={c.IDCOMMENT}
-                  className={`bg-purple-900/20 border rounded-2xl p-5 relative transition-all ${
-                    isOwn ? "border-purple-500/40" : "border-purple-700/30"
-                  }`}
-                >
-                  <div className="flex items-start gap-4">
-                    {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full bg-purple-700/60 border border-purple-500 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                      {c.USERNAME?.slice(0, 2).toUpperCase() ?? "?"}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <div className="flex items-center gap-2">
-                          <p className="text-white text-sm font-semibold">{c.USERNAME}</p>
-                          {isOwn && (
-                            <span className="text-xs text-purple-400 bg-purple-900/50 px-2 py-0.5 rounded-full">
-                              Kamu
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <StarRating
-                            value={editingId === c.IDCOMMENT ? editStars : stars}
-                            onChange={editingId === c.IDCOMMENT ? setEditStars : undefined}
-                          />
-                          <span className="text-purple-600 text-xs">{formatDate(c.CREATED_AT)}</span>
-                        </div>
-                      </div>
-
-                      {/* Edit mode / Display mode */}
-                      {editingId === c.IDCOMMENT ? (
-                        <div className="mt-2">
-                          <textarea
-                            className="w-full bg-purple-950/50 border border-purple-500 rounded-xl px-4 py-2 text-white text-sm resize-none focus:outline-none"
-                            rows={2}
-                            value={editText}
-                            onChange={(e) => setEditText(e.target.value)}
-                          />
-                          <div className="flex gap-2 mt-2">
-                            <button
-                              onClick={saveEdit}
-                              disabled={editSubmitting}
-                              className="px-4 py-1.5 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-900 text-white text-xs font-semibold rounded-full transition-colors"
-                            >
-                              {editSubmitting ? "Menyimpan..." : "Simpan"}
-                            </button>
-                            <button
-                              onClick={() => setEditingId(null)}
-                              className="px-4 py-1.5 border border-purple-700 hover:border-purple-500 text-purple-300 text-xs font-semibold rounded-full transition-colors"
-                            >
-                              Batal
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <p className="text-purple-100/80 text-sm mt-1">{c.COMMENT}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Edit/Delete — only own comments, not in edit mode */}
-                  {isOwn && editingId !== c.IDCOMMENT && (
-                    <div className="absolute top-4 right-4 flex gap-2">
-                      <button
-                        onClick={() => startEdit(c)}
-                        className="text-xs text-purple-400 hover:text-purple-200 transition-colors px-2 py-1 rounded hover:bg-purple-800/30"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(c.IDCOMMENT)}
-                        className="text-xs text-red-400 hover:text-red-300 transition-colors px-2 py-1 rounded hover:bg-red-900/20"
-                      >
-                        Hapus
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
       </div>
+
+      {/* Scroll indicator */}
+      <div
+        style={{
+          position:  "absolute",
+          bottom:    "32px",
+          left:      "50%",
+          transform: "translateX(-50%)",
+          display:   "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap:       "6px",
+          zIndex:    3,
+        }}
+      >
+        <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: "#9b7fbf", letterSpacing: "0.15em" }}>SCROLL</span>
+        <div
+          style={{
+            width:   "1px",
+            height:  "40px",
+            background: "linear-gradient(to bottom, #9d4edd, transparent)",
+            animation: "pulse 2s ease-in-out infinite",
+          }}
+        />
+      </div>
+
+      <style>{`
+        @keyframes spin {
+          from { transform: translate(-50%,-50%) rotate(0deg); }
+          to   { transform: translate(-50%,-50%) rotate(360deg); }
+        }
+        @keyframes pulse {
+          0%,100% { opacity: 0.4; }
+          50%     { opacity: 1; }
+        }
+      `}</style>
     </section>
   );
 }

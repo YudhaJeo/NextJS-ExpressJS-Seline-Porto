@@ -1,13 +1,272 @@
-/* D:\Personal App\Seline Porto NextJS ExpressJS\frontend_project\app\globals.css */
+/* app/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #0a0010;
-  --foreground: #ffffff;
+  --bg:        #07000f;
+  --bg2:       #0d0018;
+  --purple:    #9d4edd;
+  --purple-l:  #c77dff;
+  --purple-d:  #3c096c;
+  --purple-xl: #240046;
+  --glow:      rgba(157, 78, 221, 0.6);
+  --glow-s:    rgba(199, 125, 255, 0.3);
+  --pink:      #ff6ef7;
+  --cyan:      #7efff5;
+  --text:      #e8d5ff;
+  --text-dim:  #9b7fbf;
+
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-mono:  'Share Tech Mono', monospace;
+  --font-body:  'Rajdhani', sans-serif;
 }
 
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  letter-spacing: 0.02em;
+  overflow-x: hidden;
 }
+
+/* ── Pixel Glow Text ── */
+.pixel-title {
+  font-family: var(--font-pixel);
+  color: #fff;
+  text-shadow:
+    0 0 10px var(--purple-l),
+    0 0 30px var(--purple),
+    0 0 60px var(--glow),
+    2px 2px 0px var(--purple-d);
+  line-height: 1.8;
+}
+
+.pixel-label {
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  color: var(--purple-l);
+  text-shadow: 0 0 8px var(--purple);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ── Neon Border Cards ── */
+.card-pixel {
+  background: rgba(13,0,24,0.7);
+  border: 1px solid var(--purple-d);
+  position: relative;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.card-pixel::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, var(--purple), transparent 50%, var(--pink));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.card-pixel:hover {
+  border-color: var(--purple-l);
+  box-shadow: 0 0 20px var(--glow-s), 0 0 40px rgba(157,78,221,0.15), inset 0 0 20px rgba(157,78,221,0.05);
+  transform: translateY(-2px);
+}
+
+.card-pixel:hover::before {
+  opacity: 0.4;
+}
+
+/* ── Glitch Animation ── */
+@keyframes glitch {
+  0%,100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+  5%  { clip-path: inset(10% 0 50% 0); transform: translate(-4px, 1px); }
+  10% { clip-path: inset(60% 0 10% 0); transform: translate(4px, -1px); }
+  15% { clip-path: inset(30% 0 30% 0); transform: translate(-2px, 2px); }
+  20% { clip-path: inset(80% 0 5% 0);  transform: translate(2px, -2px); }
+  25% { clip-path: inset(0 0 100% 0);  transform: translate(0); }
+}
+
+@keyframes glitch2 {
+  0%,100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+  7%  { clip-path: inset(50% 0 20% 0); transform: translate(4px, -1px); }
+  14% { clip-path: inset(20% 0 60% 0); transform: translate(-4px, 2px); }
+  21% { clip-path: inset(70% 0 10% 0); transform: translate(2px, -1px); }
+  28% { clip-path: inset(0 0 100% 0);  transform: translate(0); }
+}
+
+.glitch-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-wrap::before,
+.glitch-wrap::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.glitch-wrap::before {
+  color: var(--pink);
+  animation: glitch 4s infinite linear;
+  opacity: 0.7;
+}
+
+.glitch-wrap::after {
+  color: var(--cyan);
+  animation: glitch2 4s infinite linear 0.3s;
+  opacity: 0.7;
+}
+
+/* ── Scanline ── */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.07) 2px,
+    rgba(0,0,0,0.07) 4px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* ── Corner bracket decoration ── */
+.corner-box {
+  position: relative;
+}
+
+.corner-box::before,
+.corner-box::after,
+.corner-box > span::before,
+.corner-box > span::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--purple-l);
+  border-style: solid;
+  opacity: 0.8;
+}
+.corner-box::before  { top: 0; left: 0;     border-width: 2px 0 0 2px; }
+.corner-box::after   { top: 0; right: 0;    border-width: 2px 2px 0 0; }
+.corner-box > span::before { bottom: 0; left: 0;  border-width: 0 0 2px 2px; }
+.corner-box > span::after  { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+/* ── Neon divider ── */
+.neon-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--purple), var(--pink), var(--purple), transparent);
+  box-shadow: 0 0 8px var(--glow);
+}
+
+/* ── Button pixel ── */
+.btn-pixel {
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.btn-pixel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.btn-pixel:hover {
+  box-shadow: 0 0 20px var(--glow), 0 0 40px var(--glow-s);
+  transform: translateY(-1px);
+}
+
+.btn-pixel:active {
+  transform: scale(0.97) translateY(0);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--purple-d); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--purple); }
+
+/* ── Section fade-in ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.7s ease forwards;
+}
+
+/* ── Blink cursor ── */
+@keyframes blink {
+  0%,100% { opacity: 1; } 50% { opacity: 0; }
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* ── Snow particle ── */
+@keyframes snowfall {
+  0%   { transform: translateY(-10px) translateX(0px) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.7; }
+  100% { transform: translateY(110vh) translateX(var(--drift)) rotate(360deg); opacity: 0; }
+}
+
+/* ── Pulse glow ── */
+@keyframes pulseGlow {
+  0%,100% { box-shadow: 0 0 10px var(--glow-s); }
+  50%     { box-shadow: 0 0 30px var(--glow), 0 0 60px var(--glow-s); }
+}
+
+.pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* ── CRT flicker ── */
+@keyframes flicker {
+  0%,100% { opacity: 1; } 97% { opacity: 1; } 98% { opacity: 0.8; } 99% { opacity: 1; }
+}
+
+.crt-flicker {
+  animation: flicker 6s infinite;
+}
+
+/* ── Stat bar fill ── */
+@keyframes fillBar {
+  from { width: 0; }
+  to   { width: var(--fill); }
+}
+
+.skill-bar-fill {
+  animation: fillBar 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+/* ── Floating ── */
+@keyframes float {
+  0%,100% { transform: translateY(0px); }
+  50%     { transform: translateY(-12px); }
+}
+
+.float { animation: float 4s ease-in-out infinite; }

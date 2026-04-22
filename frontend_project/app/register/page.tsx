@@ -1,3 +1,4 @@
+// app/register/page.tsx
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -6,45 +7,30 @@ import { authAPI, getToken } from "@/lib/api";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ USERNAME: "", PASSWORD: "", CONFIRM: "" });
-  const [error, setError] = useState("");
+  const [form,    setForm]    = useState({ USERNAME: "", PASSWORD: "", CONFIRM: "" });
+  const [error,   setError]   = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (getToken()) router.replace("/");
-  }, [router]);
+  useEffect(() => { if (getToken()) router.replace("/"); }, [router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
     setError("");
   };
 
   const handleSubmit = async () => {
     const { USERNAME, PASSWORD, CONFIRM } = form;
-
-    if (!USERNAME.trim() || !PASSWORD || !CONFIRM) {
-      setError("Semua field wajib diisi");
-      return;
-    }
-    if (USERNAME.trim().length < 3) {
-      setError("Username minimal 3 karakter");
-      return;
-    }
-    if (PASSWORD.length < 6) {
-      setError("Password minimal 6 karakter");
-      return;
-    }
-    if (PASSWORD !== CONFIRM) {
-      setError("Konfirmasi password tidak cocok");
-      return;
-    }
+    if (!USERNAME.trim() || !PASSWORD || !CONFIRM) { setError("Semua field wajib diisi"); return; }
+    if (USERNAME.trim().length < 3) { setError("Username minimal 3 karakter"); return; }
+    if (PASSWORD.length < 6) { setError("Password minimal 6 karakter"); return; }
+    if (PASSWORD !== CONFIRM) { setError("Password tidak cocok"); return; }
 
     setLoading(true);
     setError("");
     try {
       await authAPI.register(USERNAME.trim(), PASSWORD);
-      setSuccess("Registrasi berhasil! Mengarahkan ke halaman login...");
+      setSuccess("REGISTRATION SUCCESS! Redirecting to login...");
       setTimeout(() => router.push("/login"), 2000);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Registrasi gagal");
@@ -53,158 +39,203 @@ export default function RegisterPage() {
     }
   };
 
-  // Password strength indicator
   const getStrength = (pw: string) => {
     if (!pw) return 0;
-    let score = 0;
-    if (pw.length >= 6) score++;
-    if (pw.length >= 10) score++;
-    if (/[A-Z]/.test(pw)) score++;
-    if (/[0-9]/.test(pw)) score++;
-    if (/[^A-Za-z0-9]/.test(pw)) score++;
-    return score;
+    let s = 0;
+    if (pw.length >= 6)          s++;
+    if (pw.length >= 10)         s++;
+    if (/[A-Z]/.test(pw))       s++;
+    if (/[0-9]/.test(pw))       s++;
+    if (/[^A-Za-z0-9]/.test(pw)) s++;
+    return s;
   };
   const strength = getStrength(form.PASSWORD);
-  const strengthLabel = ["", "Lemah", "Lemah", "Sedang", "Kuat", "Sangat Kuat"][strength];
-  const strengthColor = ["", "text-red-400", "text-orange-400", "text-yellow-400", "text-green-400", "text-emerald-400"][strength];
+  const strengthColors = ["", "#ff6ef7", "#ffa94d", "#ffd166", "#7efff5", "#7efff5"];
+  const strengthLabels = ["", "WEAK", "WEAK", "MEDIUM", "STRONG", "VERY STRONG"];
+
+  const inputStyle: React.CSSProperties = {
+    width:        "100%",
+    background:   "rgba(7,0,15,0.8)",
+    border:       "1px solid rgba(157,78,221,0.3)",
+    borderRadius: "2px",
+    padding:      "12px 16px",
+    color:        "#e8d5ff",
+    fontFamily:   "var(--font-mono)",
+    fontSize:     "0.85rem",
+    outline:      "none",
+    transition:   "border-color 0.2s, box-shadow 0.2s",
+  };
 
   return (
-    <div className="min-h-screen bg-[#0a0010] flex items-center justify-center px-4 relative overflow-hidden">
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-purple-900/20 blur-3xl pointer-events-none" />
+    <div
+      style={{
+        minHeight:  "100vh",
+        background: "var(--bg)",
+        display:    "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding:    "24px",
+        position:   "relative",
+        overflow:   "hidden",
+      }}
+    >
+      <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(157,78,221,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(157,78,221,0.04) 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
+      <div aria-hidden style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%,-50%)", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle, rgba(157,78,221,0.08) 0%, transparent 70%)" }} />
 
-      <div className="relative z-10 w-full max-w-md">
+      <div style={{ width: "100%", maxWidth: "420px", position: "relative", zIndex: 3 }}>
         {/* Logo */}
-        <div className="text-center mb-8">
-          <Link
-            href="/"
-            className="text-4xl font-bold text-purple-300 hover:text-purple-100 transition-colors"
-            style={{ fontFamily: "serif" }}
-          >
-            Jess.
+        <div style={{ textAlign: "center", marginBottom: "36px" }}>
+          <Link href="/" style={{ fontFamily: "var(--font-pixel)", fontSize: "1.4rem", color: "#c77dff", textDecoration: "none", textShadow: "0 0 15px #9d4edd, 0 0 40px rgba(157,78,221,0.4), 3px 3px 0 #3c096c" }}>
+            JESS<span style={{ color: "#ff6ef7" }}>.</span>
           </Link>
-          <p className="text-purple-400/70 text-sm mt-2 tracking-widest uppercase">
-            Buat akun baru
-          </p>
+          <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#9b7fbf", letterSpacing: "0.2em", marginTop: "10px" }}>
+            CREATE NEW ACCOUNT
+          </div>
         </div>
 
-        <div className="bg-purple-950/40 border border-purple-700/30 rounded-2xl p-8 backdrop-blur-sm shadow-[0_0_40px_rgba(168,85,247,0.1)]">
-          <h1 className="text-2xl font-bold text-white mb-6">Register</h1>
+        <div style={{ background: "rgba(13,0,24,0.9)", border: "1px solid rgba(157,78,221,0.3)", borderRadius: "2px", overflow: "hidden", boxShadow: "0 0 40px rgba(157,78,221,0.1)" }}>
+          <div style={{ background: "rgba(60,9,108,0.4)", padding: "10px 20px", borderBottom: "1px solid rgba(157,78,221,0.2)", display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#c77dff", letterSpacing: "0.1em" }}>AUTH.EXE</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "#9b7fbf", marginLeft: "auto" }}>register_module v1.0</span>
+          </div>
 
-          {/* Error */}
-          {error && (
-            <div className="mb-4 px-4 py-3 bg-red-900/30 border border-red-500/40 rounded-xl text-red-300 text-sm">
-              {error}
+          <div style={{ padding: "32px 28px" }}>
+            <h1 style={{ fontFamily: "var(--font-pixel)", fontSize: "0.8rem", color: "#fff", letterSpacing: "0.1em", textShadow: "0 0 10px rgba(199,125,255,0.5)", marginBottom: "28px" }}>
+              REGISTER
+            </h1>
+
+            {error && (
+              <div style={{ marginBottom: "18px", padding: "12px 16px", background: "rgba(255,50,50,0.1)", border: "1px solid rgba(255,110,247,0.3)", fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "#ff6ef7" }}>
+                ⚠ {error}
+              </div>
+            )}
+
+            {success && (
+              <div style={{ marginBottom: "18px", padding: "12px 16px", background: "rgba(126,255,245,0.08)", border: "1px solid rgba(126,255,245,0.3)", fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#7efff5", letterSpacing: "0.1em", textShadow: "0 0 8px #7efff5" }}>
+                ✓ {success}
+              </div>
+            )}
+
+            {/* Username */}
+            <div style={{ marginBottom: "16px" }}>
+              <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>USERNAME</div>
+              <input
+                type="text"
+                name="USERNAME"
+                value={form.USERNAME}
+                onChange={handleChange}
+                placeholder="// min. 3 chars"
+                style={inputStyle}
+                onFocus={(e) => { e.target.style.borderColor = "rgba(157,78,221,0.7)"; e.target.style.boxShadow = "0 0 15px rgba(157,78,221,0.15)"; }}
+                onBlur={(e) => { e.target.style.borderColor = "rgba(157,78,221,0.3)"; e.target.style.boxShadow = "none"; }}
+              />
             </div>
-          )}
 
-          {/* Success */}
-          {success && (
-            <div className="mb-4 px-4 py-3 bg-green-900/30 border border-green-500/40 rounded-xl text-green-300 text-sm flex items-center gap-2">
-              <span>✓</span> {success}
+            {/* Password */}
+            <div style={{ marginBottom: "16px" }}>
+              <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>PASSWORD</div>
+              <input
+                type="password"
+                name="PASSWORD"
+                value={form.PASSWORD}
+                onChange={handleChange}
+                placeholder="// min. 6 chars"
+                style={inputStyle}
+                onFocus={(e) => { e.target.style.borderColor = "rgba(157,78,221,0.7)"; e.target.style.boxShadow = "0 0 15px rgba(157,78,221,0.15)"; }}
+                onBlur={(e) => { e.target.style.borderColor = "rgba(157,78,221,0.3)"; e.target.style.boxShadow = "none"; }}
+              />
+              {form.PASSWORD && (
+                <div style={{ marginTop: "8px" }}>
+                  <div style={{ display: "flex", gap: "3px", marginBottom: "5px" }}>
+                    {[1,2,3,4,5].map((i) => (
+                      <div key={i} style={{ flex: 1, height: "3px", background: i <= strength ? strengthColors[strength] : "rgba(60,9,108,0.5)", boxShadow: i <= strength ? `0 0 6px ${strengthColors[strength]}60` : "none", transition: "all 0.3s" }} />
+                    ))}
+                  </div>
+                  <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: strengthColors[strength], letterSpacing: "0.1em", textShadow: `0 0 6px ${strengthColors[strength]}60` }}>
+                    {strengthLabels[strength]}
+                  </span>
+                </div>
+              )}
             </div>
-          )}
 
-          {/* Username */}
-          <div className="mb-4">
-            <label className="block text-purple-300 text-xs uppercase tracking-wider mb-2 font-semibold">
-              Username
-            </label>
-            <input
-              type="text"
-              name="USERNAME"
-              value={form.USERNAME}
-              onChange={handleChange}
-              placeholder="Minimal 3 karakter"
-              className="w-full bg-purple-950/60 border border-purple-700/40 rounded-xl px-4 py-3 text-white placeholder-purple-600 focus:outline-none focus:border-purple-400 transition-colors text-sm"
-            />
-          </div>
+            {/* Confirm */}
+            <div style={{ marginBottom: "28px" }}>
+              <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>CONFIRM PASSWORD</div>
+              <input
+                type="password"
+                name="CONFIRM"
+                value={form.CONFIRM}
+                onChange={handleChange}
+                placeholder="// repeat password"
+                style={{
+                  ...inputStyle,
+                  borderColor: form.CONFIRM
+                    ? form.PASSWORD !== form.CONFIRM
+                      ? "rgba(255,110,247,0.5)"
+                      : "rgba(126,255,245,0.4)"
+                    : "rgba(157,78,221,0.3)",
+                }}
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+              />
+              {form.CONFIRM && form.PASSWORD !== form.CONFIRM && (
+                <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: "#ff6ef7", marginTop: "6px", letterSpacing: "0.1em" }}>
+                  ✕ PASSWORD MISMATCH
+                </div>
+              )}
+              {form.CONFIRM && form.PASSWORD === form.CONFIRM && (
+                <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: "#7efff5", marginTop: "6px", letterSpacing: "0.1em", textShadow: "0 0 6px #7efff580" }}>
+                  ✓ PASSWORDS MATCH
+                </div>
+              )}
+            </div>
 
-          {/* Password */}
-          <div className="mb-4">
-            <label className="block text-purple-300 text-xs uppercase tracking-wider mb-2 font-semibold">
-              Password
-            </label>
-            <input
-              type="password"
-              name="PASSWORD"
-              value={form.PASSWORD}
-              onChange={handleChange}
-              placeholder="Minimal 6 karakter"
-              className="w-full bg-purple-950/60 border border-purple-700/40 rounded-xl px-4 py-3 text-white placeholder-purple-600 focus:outline-none focus:border-purple-400 transition-colors text-sm"
-            />
-            {form.PASSWORD && (
-              <p className={`text-xs mt-1.5 ${strengthColor}`}>
-                Kekuatan password: {strengthLabel}
-              </p>
-            )}
-          </div>
-
-          {/* Confirm Password */}
-          <div className="mb-6">
-            <label className="block text-purple-300 text-xs uppercase tracking-wider mb-2 font-semibold">
-              Konfirmasi Password
-            </label>
-            <input
-              type="password"
-              name="CONFIRM"
-              value={form.CONFIRM}
-              onChange={handleChange}
-              placeholder="Ulangi password"
-              className={`w-full bg-purple-950/60 border rounded-xl px-4 py-3 text-white placeholder-purple-600 focus:outline-none transition-colors text-sm ${
-                form.CONFIRM && form.PASSWORD !== form.CONFIRM
-                  ? "border-red-500/60 focus:border-red-400"
-                  : form.CONFIRM && form.PASSWORD === form.CONFIRM
-                  ? "border-green-500/60 focus:border-green-400"
-                  : "border-purple-700/40 focus:border-purple-400"
-              }`}
-              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-            />
-            {form.CONFIRM && form.PASSWORD !== form.CONFIRM && (
-              <p className="text-xs mt-1.5 text-red-400">Password tidak cocok</p>
-            )}
-          </div>
-
-          {/* Submit */}
-          <button
-            onClick={handleSubmit}
-            disabled={loading || !!success}
-            className="w-full py-3 bg-purple-700 hover:bg-purple-600 disabled:bg-purple-900 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors text-sm"
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Mendaftar...
-              </span>
-            ) : (
-              "Daftar"
-            )}
-          </button>
-
-          <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-purple-800/50" />
-            <span className="text-purple-600 text-xs">atau</span>
-            <div className="flex-1 h-px bg-purple-800/50" />
-          </div>
-
-          <p className="text-center text-purple-400 text-sm">
-            Sudah punya akun?{" "}
-            <Link
-              href="/login"
-              className="text-purple-300 hover:text-white font-semibold transition-colors underline underline-offset-4"
+            <button
+              onClick={handleSubmit}
+              disabled={loading || !!success}
+              className="btn-pixel"
+              style={{
+                width:        "100%",
+                padding:      "13px",
+                background:   (loading || !!success) ? "rgba(60,9,108,0.4)" : "rgba(157,78,221,0.35)",
+                border:       "1px solid rgba(157,78,221,0.6)",
+                borderRadius: "2px",
+                color:        "#fff",
+                cursor:       (loading || !!success) ? "not-allowed" : "pointer",
+                fontFamily:   "var(--font-pixel)",
+                fontSize:     "0.5rem",
+                letterSpacing: "0.15em",
+                boxShadow:    (loading || !!success) ? "none" : "0 0 20px rgba(157,78,221,0.3)",
+                display:      "flex",
+                alignItems:   "center",
+                justifyContent: "center",
+                gap:          "8px",
+              }}
             >
-              Login di sini
-            </Link>
-          </p>
+              {loading ? (
+                <>
+                  <svg className="animate-spin" width="14" height="14" fill="none" viewBox="0 0 24 24">
+                    <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  REGISTERING...
+                </>
+              ) : "+ CREATE ACCOUNT"}
+            </button>
+
+            <div style={{ textAlign: "center", marginTop: "24px", fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "#9b7fbf" }}>
+              Have an account?{" "}
+              <Link href="/login" style={{ color: "#c77dff", textDecoration: "none", textShadow: "0 0 6px rgba(199,125,255,0.5)" }}>
+                Login here →
+              </Link>
+            </div>
+          </div>
         </div>
 
-        <p className="text-center mt-4">
-          <Link href="/" className="text-purple-600 hover:text-purple-400 text-sm transition-colors">
-            ← Kembali ke beranda
+        <div style={{ textAlign: "center", marginTop: "16px" }}>
+          <Link href="/" style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", textDecoration: "none", letterSpacing: "0.1em" }}>
+            ← BACK TO MAIN
           </Link>
-        </p>
+        </div>
       </div>
     </div>
   );
