@@ -322,7 +322,7 @@ export default function HeroSection() {
               }}
             >
               <Image
-                src="/Seline-Edited-1.PNG"
+                src="/Seline-Edited-1.png"
                 alt="Jesseline Roniar"
                 fill
                 style={{ objectFit: "cover", objectPosition: "center top" }}
