@@ -2,16 +2,25 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authAPI, saveAuth, isLoggedIn } from "@/lib/api";
 
 export default function LoginPage() {
-  const router  = useRouter();
-  const [form,    setForm]    = useState({ USERNAME: "", PASSWORD: "" });
-  const [error,   setError]   = useState("");
-  const [loading, setLoading] = useState(false);
+  const router       = useRouter();
+  const searchParams = useSearchParams();
+  const [form,       setForm]       = useState({ EMAIL: "", PASSWORD: "" });
+  const [error,      setError]      = useState("");
+  const [notice,     setNotice]     = useState("");
+  const [loading,    setLoading]    = useState(false);
+  const [showPass,   setShowPass]   = useState(false);
 
   useEffect(() => { if (isLoggedIn()) router.replace("/"); }, [router]);
+
+  useEffect(() => {
+    if (searchParams.get("verified") === "true") {
+      setNotice("Email berhasil diverifikasi! Silakan login.");
+    }
+  }, [searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -19,14 +28,14 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async () => {
-    if (!form.USERNAME.trim() || !form.PASSWORD.trim()) {
-      setError("Username dan password wajib diisi");
+    if (!form.EMAIL.trim() || !form.PASSWORD.trim()) {
+      setError("Email dan password wajib diisi");
       return;
     }
     setLoading(true);
     setError("");
     try {
-      const { data } = await authAPI.login(form.USERNAME.trim(), form.PASSWORD);
+      const { data } = await authAPI.login(form.EMAIL.trim(), form.PASSWORD);
       saveAuth(data.token, data.user);
       window.dispatchEvent(new Event("authChange"));
       router.push("/");
@@ -38,49 +47,53 @@ export default function LoginPage() {
     }
   };
 
-  const inputStyle: React.CSSProperties = {
-    width:        "100%",
-    background:   "rgba(7,0,15,0.8)",
-    border:       "1px solid rgba(157,78,221,0.3)",
+  const inputBase: React.CSSProperties = {
+    width: "100%",
+    background: "rgba(7,0,15,0.8)",
+    border: "1px solid rgba(157,78,221,0.3)",
     borderRadius: "2px",
-    padding:      "12px 16px",
-    color:        "#e8d5ff",
-    fontFamily:   "var(--font-mono)",
-    fontSize:     "0.85rem",
-    outline:      "none",
-    transition:   "border-color 0.2s, box-shadow 0.2s",
+    padding: "12px 16px",
+    color: "#e8d5ff",
+    fontFamily: "var(--font-mono)",
+    fontSize: "0.85rem",
+    outline: "none",
+    transition: "border-color 0.2s, box-shadow 0.2s",
   };
 
+  const focusOn  = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = "rgba(157,78,221,0.7)";
+    e.target.style.boxShadow   = "0 0 15px rgba(157,78,221,0.15)";
+  };
+  const focusOff = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = "rgba(157,78,221,0.3)";
+    e.target.style.boxShadow   = "none";
+  };
+
+  // ── Eye icon SVGs ──────────────────────────────────────────
+  const EyeOpen = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+  );
+  const EyeOff = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
+      <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
+      <line x1="1" y1="1" x2="23" y2="23"/>
+    </svg>
+  );
+
   return (
-    <div
-      style={{
-        minHeight:  "100vh",
-        background: "var(--bg)",
-        display:    "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding:    "24px",
-        position:   "relative",
-        overflow:   "hidden",
-      }}
-    >
-      {/* Grid BG */}
+    <div style={{ minHeight: "100vh", background: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", position: "relative", overflow: "hidden" }}>
       <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(157,78,221,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(157,78,221,0.04) 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
-      <div aria-hidden style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%,-50%)", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle, rgba(157,78,221,0.1) 0%, transparent 70%)" }} />
+      <div aria-hidden style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%,-50%)", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle,rgba(157,78,221,0.1) 0%,transparent 70%)" }} />
 
       <div style={{ width: "100%", maxWidth: "420px", position: "relative", zIndex: 3 }}>
+
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "36px" }}>
-          <Link
-            href="/"
-            style={{
-              fontFamily:  "var(--font-pixel)",
-              fontSize:    "1.4rem",
-              color:       "#c77dff",
-              textDecoration: "none",
-              textShadow:  "0 0 15px #9d4edd, 0 0 40px rgba(157,78,221,0.4), 3px 3px 0 #3c096c",
-            }}
-          >
+          <Link href="/" style={{ fontFamily: "var(--font-pixel)", fontSize: "1.4rem", color: "#c77dff", textDecoration: "none", textShadow: "0 0 15px #9d4edd,0 0 40px rgba(157,78,221,0.4),3px 3px 0 #3c096c" }}>
             JESS<span style={{ color: "#ff6ef7" }}>.</span>
           </Link>
           <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#9b7fbf", letterSpacing: "0.2em", marginTop: "10px" }}>
@@ -89,15 +102,8 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div
-          style={{
-            background:   "rgba(13,0,24,0.9)",
-            border:       "1px solid rgba(157,78,221,0.3)",
-            borderRadius: "2px",
-            overflow:     "hidden",
-            boxShadow:    "0 0 40px rgba(157,78,221,0.1)",
-          }}
-        >
+        <div style={{ background: "rgba(13,0,24,0.9)", border: "1px solid rgba(157,78,221,0.3)", borderRadius: "2px", overflow: "hidden", boxShadow: "0 0 40px rgba(157,78,221,0.1)" }}>
+
           {/* Top bar */}
           <div style={{ background: "rgba(60,9,108,0.4)", padding: "10px 20px", borderBottom: "1px solid rgba(157,78,221,0.2)", display: "flex", alignItems: "center", gap: "8px" }}>
             <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#c77dff", letterSpacing: "0.1em" }}>AUTH.EXE</span>
@@ -109,65 +115,73 @@ export default function LoginPage() {
               LOGIN
             </h1>
 
-            {error && (
-              <div style={{ marginBottom: "20px", padding: "12px 16px", background: "rgba(255,50,50,0.1)", border: "1px solid rgba(255,110,247,0.3)", fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "#ff6ef7", display: "flex", gap: "8px", alignItems: "flex-start" }}>
-                <span>⚠</span> <span>{error}</span>
+            {notice && (
+              <div style={{ marginBottom: "20px", padding: "12px 16px", background: "rgba(126,255,245,0.08)", border: "1px solid rgba(126,255,245,0.3)", fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#7efff5", letterSpacing: "0.1em", textShadow: "0 0 8px #7efff5" }}>
+                ✓ {notice}
               </div>
             )}
 
+            {error && (
+              <div style={{ marginBottom: "20px", padding: "12px 16px", background: "rgba(255,50,50,0.1)", border: "1px solid rgba(255,110,247,0.3)", fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "#ff6ef7", display: "flex", gap: "8px", alignItems: "flex-start" }}>
+                <span>⚠</span><span>{error}</span>
+              </div>
+            )}
+
+            {/* EMAIL */}
             <div style={{ marginBottom: "18px" }}>
-              <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>USERNAME</div>
+              <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>EMAIL</div>
               <input
-                type="text"
-                name="USERNAME"
-                value={form.USERNAME}
-                onChange={handleChange}
-                placeholder="// enter username"
-                autoComplete="username"
-                style={inputStyle}
-                onFocus={(e) => { e.target.style.borderColor = "rgba(157,78,221,0.7)"; e.target.style.boxShadow = "0 0 15px rgba(157,78,221,0.15)"; }}
-                onBlur={(e) => { e.target.style.borderColor = "rgba(157,78,221,0.3)"; e.target.style.boxShadow = "none"; }}
+                type="email" name="EMAIL" value={form.EMAIL}
+                onChange={handleChange} placeholder="// enter email"
+                autoComplete="email"
+                style={inputBase} onFocus={focusOn} onBlur={focusOff}
                 onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
               />
             </div>
 
+            {/* PASSWORD + toggle */}
             <div style={{ marginBottom: "28px" }}>
               <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>PASSWORD</div>
-              <input
-                type="password"
-                name="PASSWORD"
-                value={form.PASSWORD}
-                onChange={handleChange}
-                placeholder="// enter password"
-                autoComplete="current-password"
-                style={inputStyle}
-                onFocus={(e) => { e.target.style.borderColor = "rgba(157,78,221,0.7)"; e.target.style.boxShadow = "0 0 15px rgba(157,78,221,0.15)"; }}
-                onBlur={(e) => { e.target.style.borderColor = "rgba(157,78,221,0.3)"; e.target.style.boxShadow = "none"; }}
-                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-              />
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPass ? "text" : "password"}
+                  name="PASSWORD" value={form.PASSWORD}
+                  onChange={handleChange} placeholder="// enter password"
+                  autoComplete="current-password"
+                  style={{ ...inputBase, paddingRight: "44px" }}
+                  onFocus={focusOn} onBlur={focusOff}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass((v) => !v)}
+                  style={{
+                    position: "absolute", right: "12px", top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "none", border: "none", cursor: "pointer",
+                    color: showPass ? "#c77dff" : "#9b7fbf",
+                    padding: "2px",
+                    display: "flex", alignItems: "center",
+                    transition: "color 0.2s",
+                  }}
+                  aria-label={showPass ? "Sembunyikan password" : "Tampilkan password"}
+                >
+                  {showPass ? <EyeOff /> : <EyeOpen />}
+                </button>
+              </div>
             </div>
 
+            {/* Submit */}
             <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="btn-pixel"
+              onClick={handleSubmit} disabled={loading} className="btn-pixel"
               style={{
-                width:        "100%",
-                padding:      "13px",
-                background:   loading ? "rgba(60,9,108,0.4)" : "rgba(157,78,221,0.35)",
-                border:       "1px solid rgba(157,78,221,0.6)",
-                borderRadius: "2px",
-                color:        "#fff",
-                cursor:       loading ? "not-allowed" : "pointer",
-                fontFamily:   "var(--font-pixel)",
-                fontSize:     "0.5rem",
-                letterSpacing: "0.15em",
-                boxShadow:    loading ? "none" : "0 0 20px rgba(157,78,221,0.3)",
-                transition:   "all 0.2s",
-                display:      "flex",
-                alignItems:   "center",
-                justifyContent: "center",
-                gap:          "8px",
+                width: "100%", padding: "13px",
+                background: loading ? "rgba(60,9,108,0.4)" : "rgba(157,78,221,0.35)",
+                border: "1px solid rgba(157,78,221,0.6)", borderRadius: "2px",
+                color: "#fff", cursor: loading ? "not-allowed" : "pointer",
+                fontFamily: "var(--font-pixel)", fontSize: "0.5rem", letterSpacing: "0.15em",
+                boxShadow: loading ? "none" : "0 0 20px rgba(157,78,221,0.3)",
+                transition: "all 0.2s", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
               }}
             >
               {loading ? (

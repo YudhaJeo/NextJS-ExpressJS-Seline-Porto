@@ -325,6 +325,7 @@ export default function HeroSection() {
                 src="/Seline-Edited-1.png"
                 alt="Jesseline Roniar"
                 fill
+                sizes="(max-width: 768px) 240px, 240px"
                 style={{ objectFit: "cover", objectPosition: "center top" }}
                 priority
               />

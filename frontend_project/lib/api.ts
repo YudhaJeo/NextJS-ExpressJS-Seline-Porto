@@ -81,18 +81,21 @@ export default apiClient;
 
 // ── Auth API ───────────────────────────────────────────────
 export const authAPI = {
-  register: (USERNAME: string, PASSWORD: string) =>
+  // ✅ Tambah EMAIL sebagai param ke-2
+  register: (USERNAME: string, EMAIL: string, PASSWORD: string) =>
     apiClient.post<{ message: string }>("/auth/register", {
       USERNAME,
+      EMAIL,
       PASSWORD,
     }),
 
-  login: (USERNAME: string, PASSWORD: string) =>
+  // ✅ Login pakai EMAIL bukan USERNAME
+  login: (EMAIL: string, PASSWORD: string) =>
     apiClient.post<{
       message: string;
       token: string;
       user: AuthUser;
-    }>("/auth/login", { USERNAME, PASSWORD }),
+    }>("/auth/login", { EMAIL, PASSWORD }),
 };
 
 // ── Comment types & API ────────────────────────────────────
