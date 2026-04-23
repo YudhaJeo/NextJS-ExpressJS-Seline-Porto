@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authAPI, getToken } from "@/lib/api";
+import SnowOverlay from "@/components/SnowOverlay";
+import ScanlineOverlay from "@/components/ScanlineOverlay";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -83,7 +85,6 @@ export default function RegisterPage() {
     e.target.style.boxShadow   = "none";
   };
 
-  // ── Eye icon SVGs ──────────────────────────────────────────
   const EyeOpen = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -98,51 +99,20 @@ export default function RegisterPage() {
     </svg>
   );
 
-  // Reusable password wrapper
-  const PasswordField = ({
-    name, value, show, onToggle, placeholder, onKeyDown,
-    borderColor,
-  }: {
-    name: string; value: string; show: boolean;
-    onToggle: () => void; placeholder: string;
-    onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
-    borderColor?: string;
-  }) => (
-    <div style={{ position: "relative" }}>
-      <input
-        type={show ? "text" : "password"}
-        name={name} value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-        autoComplete={name === "PASSWORD" ? "new-password" : "new-password"}
-        style={{ ...inputBase, paddingRight: "44px", borderColor: borderColor ?? "rgba(157,78,221,0.3)" }}
-        onFocus={focusOn} onBlur={focusOff}
-        onKeyDown={onKeyDown}
-      />
-      <button
-        type="button"
-        onClick={onToggle}
-        style={{
-          position: "absolute", right: "12px", top: "50%",
-          transform: "translateY(-50%)",
-          background: "none", border: "none", cursor: "pointer",
-          color: show ? "#c77dff" : "#9b7fbf",
-          padding: "2px", display: "flex", alignItems: "center",
-          transition: "color 0.2s",
-        }}
-        aria-label={show ? "Sembunyikan password" : "Tampilkan password"}
-      >
-        {show ? <EyeOff /> : <EyeOpen />}
-      </button>
-    </div>
-  );
-
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", position: "relative", overflow: "hidden" }}>
-      <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(157,78,221,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(157,78,221,0.04) 1px,transparent 1px)", backgroundSize: "40px 40px" }} />
-      <div aria-hidden style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%,-50%)", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle,rgba(157,78,221,0.08) 0%,transparent 70%)" }} />
+    <div style={{ minHeight: "100vh", background: "#07000f", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", position: "relative", overflow: "hidden" }}>
 
-      <div style={{ width: "100%", maxWidth: "420px", position: "relative", zIndex: 3 }}>
+      {/* ── Overlays ── */}
+      <ScanlineOverlay />
+      <SnowOverlay />
+
+      {/* ── Background effects ── */}
+      <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(157,78,221,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(157,78,221,0.04) 1px,transparent 1px)", backgroundSize: "40px 40px", zIndex: 2 }} />
+      <div aria-hidden style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%,-50%)", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle,rgba(157,78,221,0.1) 0%,transparent 70%)", zIndex: 2 }} />
+      <div aria-hidden style={{ position: "absolute", top: "80%", left: "10%", width: "250px", height: "250px", borderRadius: "50%", background: "radial-gradient(circle,rgba(255,110,247,0.06) 0%,transparent 70%)", zIndex: 2 }} />
+
+      {/* ── Content ── */}
+      <div style={{ width: "100%", maxWidth: "420px", position: "relative", zIndex: 10, animation: "fadeInUp 0.6s ease both" }}>
 
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "36px" }}>
@@ -155,11 +125,14 @@ export default function RegisterPage() {
         </div>
 
         {/* Card */}
-        <div style={{ background: "rgba(13,0,24,0.9)", border: "1px solid rgba(157,78,221,0.3)", borderRadius: "2px", overflow: "hidden", boxShadow: "0 0 40px rgba(157,78,221,0.1)" }}>
+        <div style={{ background: "rgba(13,0,24,0.9)", border: "1px solid rgba(157,78,221,0.3)", borderRadius: "2px", overflow: "hidden", boxShadow: "0 0 40px rgba(157,78,221,0.15), 0 0 80px rgba(157,78,221,0.05)" }}>
 
-          {/* Top bar */}
+          {/* Terminal bar */}
           <div style={{ background: "rgba(60,9,108,0.4)", padding: "10px 20px", borderBottom: "1px solid rgba(157,78,221,0.2)", display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#c77dff", letterSpacing: "0.1em" }}>AUTH.EXE</span>
+            <span style={{ width: "8px", height: "8px", background: "#ff6ef7", borderRadius: "50%", boxShadow: "0 0 6px #ff6ef7" }} />
+            <span style={{ width: "8px", height: "8px", background: "#ffd166", borderRadius: "50%", boxShadow: "0 0 6px #ffd166" }} />
+            <span style={{ width: "8px", height: "8px", background: "#7efff5", borderRadius: "50%", boxShadow: "0 0 6px #7efff5" }} />
+            <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#c77dff", letterSpacing: "0.1em", marginLeft: "8px" }}>AUTH.EXE</span>
             <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "#9b7fbf", marginLeft: "auto" }}>register_module v1.0</span>
           </div>
 
@@ -218,7 +191,7 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* PASSWORD + toggle */}
+            {/* PASSWORD */}
             <div style={{ marginBottom: "16px" }}>
               <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>PASSWORD</div>
               <div style={{ position: "relative" }}>
@@ -250,7 +223,7 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {/* CONFIRM + toggle */}
+            {/* CONFIRM PASSWORD */}
             <div style={{ marginBottom: "28px" }}>
               <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>CONFIRM PASSWORD</div>
               <div style={{ position: "relative" }}>
@@ -322,6 +295,13 @@ export default function RegisterPage() {
           </Link>
         </div>
       </div>
+
+      <style>{`
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(24px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

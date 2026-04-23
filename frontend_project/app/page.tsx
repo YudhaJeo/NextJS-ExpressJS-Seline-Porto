@@ -1,4 +1,4 @@
-// app/page.tsx  — Tab 1: Home + About Me + Comment Section
+// app/page.tsx
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
@@ -12,13 +12,15 @@ export default function Home() {
     <div className="relative min-h-screen bg-[#07000f] text-white overflow-x-hidden">
       <ScanlineOverlay />
       <SnowOverlay />
-      <Navbar activePage="home" />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <CommentSection />
-      </main>
-      <Footer />
+      <div style={{ position: "relative", zIndex: 10 }}>
+        <Navbar activePage="home" />
+        <main>
+          <HeroSection />
+          <AboutSection />
+          <CommentSection />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }
