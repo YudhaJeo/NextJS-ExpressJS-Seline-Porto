@@ -5,7 +5,6 @@ import Image from "next/image";
 
 const TAGLINE = "BUILDING WORLDS WITH CODE, ART, AND IMAGINATION";
 
-// Pre-computed orbit positions (no Math.sin/cos at render time)
 const ORBIT_DOTS = [
   { deg: 0,   color: "#c77dff" },
   { deg: 72,  color: "#ff6ef7" },
@@ -21,7 +20,6 @@ const ORBIT_DOTS = [
 export default function HeroSection() {
   const [displayed, setDisplayed] = useState("");
   const [cursor,    setCursor]    = useState(true);
-  // ✅ FIX: orbit dots hanya dirender di client
   const [showOrbit, setShowOrbit] = useState(false);
   const idxRef = useRef(0);
 
@@ -41,15 +39,9 @@ export default function HeroSection() {
     return () => clearInterval(iv);
   }, []);
 
-  // ✅ FIX: render orbit dots setelah mount (client-only)
-  useEffect(() => {
-    setShowOrbit(true);
-  }, []);
+  useEffect(() => { setShowOrbit(true); }, []);
 
-  // Parallax refs
-  const gridRef  = useRef<HTMLDivElement>(null);
-  const glowRef  = useRef<HTMLDivElement>(null);
-  const photoRef = useRef<HTMLDivElement>(null);
+  // Rings-only scroll parallax (grid/glow now handled by ParallaxScene)
   const ringsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -60,9 +52,6 @@ export default function HeroSection() {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         const sy = window.scrollY;
-        if (gridRef.current)  gridRef.current.style.transform  = `translateY(${sy * 0.06}px)`;
-        if (glowRef.current)  glowRef.current.style.transform  = `translate(-50%,-50%) translateY(${sy * 0.14}px)`;
-        if (photoRef.current) photoRef.current.style.transform = `translateY(${sy * 0.15}px)`;
         if (ringsRef.current) ringsRef.current.style.transform = `translateY(${sy * -0.04}px)`;
       });
     };
@@ -91,13 +80,6 @@ export default function HeroSection() {
 
   return (
     <section id="home" style={{ minHeight: "100vh", display: "flex", alignItems: "center", padding: "80px 24px 0", position: "relative", overflow: "hidden" }}>
-
-      {/* BG grid */}
-      <div ref={gridRef} aria-hidden style={{ position: "absolute", inset: "-10%", backgroundImage: "linear-gradient(rgba(157,78,221,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(157,78,221,0.05) 1px,transparent 1px)", backgroundSize: "40px 40px", zIndex: 0, willChange: "transform" }} />
-
-      {/* Radial glow */}
-      <div ref={glowRef} aria-hidden style={{ position: "absolute", top: "30%", left: "55%", width: "700px", height: "700px", borderRadius: "50%", background: "radial-gradient(circle,rgba(157,78,221,0.18) 0%,transparent 70%)", transform: "translate(-50%,-50%)", zIndex: 0, pointerEvents: "none", willChange: "transform" }} />
-      <div aria-hidden style={{ position: "absolute", top: "60%", left: "8%", width: "350px", height: "350px", borderRadius: "50%", background: "radial-gradient(circle,rgba(255,110,247,0.07) 0%,transparent 70%)", zIndex: 0, pointerEvents: "none" }} />
 
       <div style={{ maxWidth: "1100px", margin: "0 auto", width: "100%", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "48px", position: "relative", zIndex: 3 }}>
 
@@ -130,36 +112,31 @@ export default function HeroSection() {
         </div>
 
         {/* RIGHT: Photo */}
-        <div ref={photoRef} style={{ flex: "0 0 auto", position: "relative", display: "flex", justifyContent: "center", willChange: "transform", animation: "fadeInUp 0.7s 0.3s both" }}>
+        <div style={{ flex: "0 0 auto", position: "relative", display: "flex", justifyContent: "center", animation: "fadeInUp 0.7s 0.3s both" }}>
 
-          {/* Rings layer */}
-          <div ref={ringsRef} aria-hidden style={{ position: "absolute", inset: 0, willChange: "transform" }}>
+          {/* Rings layer — kept separate so they don't tilt with the card */}
+          <div ref={ringsRef} aria-hidden style={{ position: "absolute", inset: 0, willChange: "transform", pointerEvents: "none" }}>
             <div style={{ position: "absolute", width: "400px", height: "400px", border: "1px solid rgba(157,78,221,0.18)", borderRadius: "50%", top: "50%", left: "50%", transform: "translate(-50%,-50%)", animation: "heroSpin 22s linear infinite" }} />
             <div style={{ position: "absolute", width: "310px", height: "310px", border: "1px dashed rgba(199,125,255,0.1)", borderRadius: "50%", top: "50%", left: "50%", transform: "translate(-50%,-50%)", animation: "heroSpin 15s linear infinite reverse" }} />
-
-            {/* ✅ FIX: orbit dots hanya muncul setelah client mount */}
             {showOrbit && ORBIT_DOTS.map((dot, i) => (
               <div
                 key={i}
                 aria-hidden
-                style={{
-                  position:     "absolute",
-                  width:        "5px",
-                  height:       "5px",
-                  background:   dot.color,
-                  boxShadow:    `0 0 8px ${dot.color}`,
-                  borderRadius: "50%",
-                  top:          dot.top,
-                  left:         dot.left,
-                }}
+                style={{ position: "absolute", width: "5px", height: "5px", background: dot.color, boxShadow: `0 0 8px ${dot.color}`, borderRadius: "50%", top: dot.top, left: dot.left }}
               />
             ))}
           </div>
 
-          {/* Photo card */}
+          {/* Photo card — data-tilt: ParallaxScene RAF applies mouse tilt here */}
           <div
+            data-tilt
             className="corner-box float"
-            style={{ width: "350px", height: "430px", position: "relative", background: "rgba(13,0,24,0.8)", border: "1px solid rgba(157,78,221,0.4)", boxShadow: "0 0 40px rgba(157,78,221,0.2)", overflow: "hidden", padding: "6px", transition: "box-shadow 0.3s ease" }}
+            style={{
+              width: "350px", height: "430px", position: "relative",
+              background: "rgba(13,0,24,0.8)", border: "1px solid rgba(157,78,221,0.4)",
+              boxShadow: "0 0 40px rgba(157,78,221,0.2)", overflow: "hidden", padding: "6px",
+              transition: "box-shadow 0.3s ease",
+            }}
             onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 0 70px rgba(157,78,221,0.45), 0 0 120px rgba(157,78,221,0.15)"; }}
             onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 0 40px rgba(157,78,221,0.2)"; }}
           >

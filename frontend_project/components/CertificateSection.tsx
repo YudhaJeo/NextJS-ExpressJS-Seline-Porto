@@ -29,7 +29,6 @@ export default function CertificateSection() {
     return () => obs.disconnect();
   }, []);
 
-  // Ripple
   const ripple = (e: React.MouseEvent<HTMLElement>) => {
     const el = e.currentTarget;
     const r  = el.getBoundingClientRect();
@@ -56,27 +55,26 @@ export default function CertificateSection() {
               key={cert.label}
               href={cert.file}
               download
+              data-tilt              /* ← mouse tilt from ParallaxScene */
               className="reveal"
               onClick={ripple}
               style={{
                 display:"flex",flexDirection:"column",gap:"14px",padding:"24px",
                 background:"rgba(13,0,24,0.85)",border:`1px solid ${cert.color}25`,borderRadius:"2px",
-                textDecoration:"none",transition:"all 0.3s cubic-bezier(0.22,1,0.36,1)",
+                textDecoration:"none",transition:"border-color 0.3s, box-shadow 0.3s",
                 position:"relative",overflow:"hidden",transitionDelay:`${i*0.08}s`,
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = cert.color+"70";
                 e.currentTarget.style.boxShadow   = `0 0 30px ${cert.color}25, inset 0 0 25px ${cert.color}06`;
-                e.currentTarget.style.transform   = "translateY(-6px) scale(1.02)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = cert.color+"25";
                 e.currentTarget.style.boxShadow   = "none";
-                e.currentTarget.style.transform   = "translateY(0) scale(1)";
               }}
             >
-              <div style={{ position:"absolute",top:0,left:0,width:"16px",height:"16px",borderTop:`2px solid ${cert.color}`,borderLeft:`2px solid ${cert.color}`,transition:"all 0.3s" }} />
-              <div style={{ position:"absolute",top:0,right:0,width:"16px",height:"16px",borderTop:`2px solid ${cert.color}`,borderRight:`2px solid ${cert.color}`,transition:"all 0.3s" }} />
+              <div style={{ position:"absolute",top:0,left:0,width:"16px",height:"16px",borderTop:`2px solid ${cert.color}`,borderLeft:`2px solid ${cert.color}` }} />
+              <div style={{ position:"absolute",top:0,right:0,width:"16px",height:"16px",borderTop:`2px solid ${cert.color}`,borderRight:`2px solid ${cert.color}` }} />
 
               <div style={{ alignSelf:"flex-start",padding:"3px 10px",background:`${cert.color}15`,border:`1px solid ${cert.color}40`,borderRadius:"1px",fontFamily:"var(--font-pixel)",fontSize:"0.35rem",color:cert.color,textShadow:`0 0 6px ${cert.color}`,letterSpacing:"0.12em" }}>
                 {cert.badge}
@@ -90,7 +88,7 @@ export default function CertificateSection() {
                 <div style={{ fontFamily:"var(--font-body)",fontSize:"0.9rem",color:"#e8d5ff",fontWeight:600,lineHeight:1.5 }}>{cert.label}</div>
               </div>
 
-              <div style={{ display:"flex",alignItems:"center",gap:"8px",marginTop:"auto",padding:"8px 12px",background:`${cert.color}10`,border:`1px solid ${cert.color}30`,borderRadius:"1px",transition:"background 0.2s" }}>
+              <div style={{ display:"flex",alignItems:"center",gap:"8px",marginTop:"auto",padding:"8px 12px",background:`${cert.color}10`,border:`1px solid ${cert.color}30`,borderRadius:"1px" }}>
                 <span style={{ fontFamily:"var(--font-pixel)",fontSize:"0.38rem",color:cert.color,letterSpacing:"0.1em" }}>↓ DOWNLOAD PDF</span>
               </div>
             </a>

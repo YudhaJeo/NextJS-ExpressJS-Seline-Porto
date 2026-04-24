@@ -19,7 +19,7 @@ const softSkills = [
 ];
 
 function SkillBar({ name, icon, level, color = "#9d4edd", delay = 0 }: { name: string; icon: string; level: number; color?: string; delay?: number }) {
-  const barRef = useRef<HTMLDivElement>(null);
+  const barRef  = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
   const animated = useRef(false);
 
@@ -30,9 +30,7 @@ function SkillBar({ name, icon, level, color = "#9d4edd", delay = 0 }: { name: s
       if (entry.isIntersecting && !animated.current) {
         animated.current = true;
         setTimeout(() => {
-          if (fillRef.current) {
-            fillRef.current.style.width = `${level}%`;
-          }
+          if (fillRef.current) fillRef.current.style.width = `${level}%`;
         }, delay);
         obs.disconnect();
       }
@@ -44,9 +42,10 @@ function SkillBar({ name, icon, level, color = "#9d4edd", delay = 0 }: { name: s
   return (
     <div
       ref={barRef}
-      style={{ background: "rgba(13,0,24,0.7)", border: "1px solid rgba(157,78,221,0.2)", padding: "14px 18px", borderRadius: "2px", transition: "all 0.3s cubic-bezier(0.22,1,0.36,1)", cursor: "default" }}
-      onMouseEnter={(e) => { e.currentTarget.style.borderColor = color+"80"; e.currentTarget.style.boxShadow = `0 0 20px ${color}18`; e.currentTarget.style.transform = "translateX(6px)"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(157,78,221,0.2)"; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.transform = "translateX(0)"; }}
+      data-tilt
+      style={{ background: "rgba(13,0,24,0.7)", border: "1px solid rgba(157,78,221,0.2)", padding: "14px 18px", borderRadius: "2px", transition: "border-color 0.3s, box-shadow 0.3s", cursor: "default" }}
+      onMouseEnter={(e) => { e.currentTarget.style.borderColor = color+"80"; e.currentTarget.style.boxShadow = `0 0 20px ${color}18`; }}
+      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(157,78,221,0.2)"; e.currentTarget.style.boxShadow = "none"; }}
     >
       <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"10px" }}>
         <div style={{ display:"flex",alignItems:"center",gap:"10px" }}>
@@ -68,9 +67,8 @@ function SkillBar({ name, icon, level, color = "#9d4edd", delay = 0 }: { name: s
 
 export default function CoreSkillsSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const bgRef      = useRef<HTMLDivElement>(null);
 
-  // Scroll reveal
+  // Scroll reveal only — BG parallax handled by ParallaxScene
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
@@ -88,30 +86,8 @@ export default function CoreSkillsSection() {
     return () => obs.disconnect();
   }, []);
 
-  // Parallax BG
-  useEffect(() => {
-    const pref = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (pref) return;
-    let raf: number;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        if (!bgRef.current || !sectionRef.current) return;
-        const rect = sectionRef.current.getBoundingClientRect();
-        const prog = -rect.top / window.innerHeight;
-        bgRef.current.style.transform = `translateY(${prog * 25}px)`;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("scroll", onScroll); };
-  }, []);
-
   return (
     <section ref={sectionRef} id="skills" style={{ padding: "100px 24px", position: "relative", overflow: "hidden" }}>
-
-      {/* Parallax BG */}
-      <div ref={bgRef} aria-hidden style={{ position:"absolute",top:"-20%",left:"-5%",width:"500px",height:"500px",borderRadius:"50%",background:"radial-gradient(circle,rgba(157,78,221,0.06) 0%,transparent 70%)",pointerEvents:"none",willChange:"transform" }} />
-
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <div className="reveal" style={{ marginBottom: "60px" }}>
           <div style={{ fontFamily:"var(--font-pixel)",fontSize:"0.5rem",color:"#ff6ef7",letterSpacing:"0.2em",textShadow:"0 0 8px #ff6ef7",marginBottom:"12px" }}>// SKILL_TREE.DAT</div>

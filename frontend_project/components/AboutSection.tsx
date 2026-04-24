@@ -10,7 +10,6 @@ const stats = [
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const bgRef      = useRef<HTMLDivElement>(null);
 
   // Scroll reveal
   useEffect(() => {
@@ -30,24 +29,6 @@ export default function AboutSection() {
     return () => obs.disconnect();
   }, []);
 
-  // Parallax BG
-  useEffect(() => {
-    const pref = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (pref) return;
-    let raf: number;
-    const onScroll = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => {
-        if (!bgRef.current || !sectionRef.current) return;
-        const rect = sectionRef.current.getBoundingClientRect();
-        const prog = -rect.top / window.innerHeight;
-        bgRef.current.style.transform = `translateY(${prog * 30}px)`;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("scroll", onScroll); };
-  }, []);
-
   // Ripple
   const ripple = (e: React.MouseEvent<HTMLElement>) => {
     const el = e.currentTarget;
@@ -62,9 +43,6 @@ export default function AboutSection() {
   return (
     <section ref={sectionRef} id="about" style={{ padding: "100px 24px", position: "relative", overflow: "hidden" }}>
 
-      {/* Parallax BG glow */}
-      <div ref={bgRef} aria-hidden style={{ position: "absolute", top: "20%", right: "-10%", width: "500px", height: "500px", borderRadius: "50%", background: "radial-gradient(circle,rgba(255,110,247,0.05) 0%,transparent 70%)", pointerEvents: "none", willChange: "transform" }} />
-
       <div className="neon-divider" style={{ marginBottom: "80px" }} />
 
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
@@ -76,9 +54,16 @@ export default function AboutSection() {
         </div>
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: "48px", alignItems: "flex-start" }}>
-          {/* Terminal box */}
+
+          {/* Terminal box — data-tilt: ParallaxScene applies mouse tilt */}
           <div className="reveal-left" style={{ flex: "1 1 400px", minWidth: "280px" }}>
-            <div style={{ background: "rgba(13,0,24,0.8)", border: "1px solid rgba(157,78,221,0.3)", borderRadius: "2px", overflow: "hidden", transition: "border-color 0.3s, box-shadow 0.3s" }}
+            <div
+              data-tilt
+              style={{
+                background: "rgba(13,0,24,0.8)", border: "1px solid rgba(157,78,221,0.3)",
+                borderRadius: "2px", overflow: "hidden",
+                transition: "border-color 0.3s, box-shadow 0.3s",
+              }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor="rgba(157,78,221,0.6)"; e.currentTarget.style.boxShadow="0 0 30px rgba(157,78,221,0.12)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor="rgba(157,78,221,0.3)"; e.currentTarget.style.boxShadow="none"; }}
             >
@@ -106,6 +91,7 @@ export default function AboutSection() {
             {stats.map((s, i) => (
               <div
                 key={s.key}
+                data-tilt
                 className="card-pixel reveal-right"
                 style={{ padding: "20px", borderRadius: "2px", display: "flex", alignItems: "center", gap: "16px", transitionDelay: `${i * 0.08}s` }}
                 onClick={ripple}
@@ -124,7 +110,11 @@ export default function AboutSection() {
             ))}
 
             {/* XP Bar */}
-            <div className="reveal" style={{ padding:"16px 20px",background:"rgba(13,0,24,0.6)",border:"1px solid rgba(157,78,221,0.2)",borderRadius:"2px",transitionDelay:"0.25s" }}>
+            <div
+              data-tilt
+              className="reveal"
+              style={{ padding:"16px 20px",background:"rgba(13,0,24,0.6)",border:"1px solid rgba(157,78,221,0.2)",borderRadius:"2px",transitionDelay:"0.25s" }}
+            >
               <div style={{ display:"flex",justifyContent:"space-between",marginBottom:"8px" }}>
                 <span style={{ fontFamily:"var(--font-pixel)",fontSize:"0.4rem",color:"#9b7fbf",letterSpacing:"0.1em" }}>XP</span>
                 <span style={{ fontFamily:"var(--font-pixel)",fontSize:"0.4rem",color:"#c77dff" }}>LVL 4</span>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authAPI, getToken } from "@/lib/api";
 import SnowOverlay from "@/components/SnowOverlay";
-import ScanlineOverlay from "@/components/ScanlineOverlay";
+import ParallaxScene from "@/components/ParallaxScene";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -100,199 +100,201 @@ export default function RegisterPage() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "#07000f", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", position: "relative", overflow: "hidden" }}>
-
-      {/* ── Overlays ── */}
-      <ScanlineOverlay />
+    <ParallaxScene>
       <SnowOverlay />
 
-      {/* ── Background effects ── */}
-      <div aria-hidden style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(157,78,221,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(157,78,221,0.04) 1px,transparent 1px)", backgroundSize: "40px 40px", zIndex: 2 }} />
-      <div aria-hidden style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%,-50%)", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle,rgba(157,78,221,0.1) 0%,transparent 70%)", zIndex: 2 }} />
-      <div aria-hidden style={{ position: "absolute", top: "80%", left: "10%", width: "250px", height: "250px", borderRadius: "50%", background: "radial-gradient(circle,rgba(255,110,247,0.06) 0%,transparent 70%)", zIndex: 2 }} />
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px", position: "relative" }}>
+        <div style={{ width: "100%", maxWidth: "420px", position: "relative", zIndex: 10, animation: "fadeInUp 0.6s ease both" }}>
 
-      {/* ── Content ── */}
-      <div style={{ width: "100%", maxWidth: "420px", position: "relative", zIndex: 10, animation: "fadeInUp 0.6s ease both" }}>
-
-        {/* Logo */}
-        <div style={{ textAlign: "center", marginBottom: "36px" }}>
-          <Link href="/" style={{ fontFamily: "var(--font-pixel)", fontSize: "1.4rem", color: "#c77dff", textDecoration: "none", textShadow: "0 0 15px #9d4edd,0 0 40px rgba(157,78,221,0.4),3px 3px 0 #3c096c" }}>
-            JESS<span style={{ color: "#ff6ef7" }}>.</span>
-          </Link>
-          <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#9b7fbf", letterSpacing: "0.2em", marginTop: "10px" }}>
-            CREATE NEW ACCOUNT
-          </div>
-        </div>
-
-        {/* Card */}
-        <div style={{ background: "rgba(13,0,24,0.9)", border: "1px solid rgba(157,78,221,0.3)", borderRadius: "2px", overflow: "hidden", boxShadow: "0 0 40px rgba(157,78,221,0.15), 0 0 80px rgba(157,78,221,0.05)" }}>
-
-          {/* Terminal bar */}
-          <div style={{ background: "rgba(60,9,108,0.4)", padding: "10px 20px", borderBottom: "1px solid rgba(157,78,221,0.2)", display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ width: "8px", height: "8px", background: "#ff6ef7", borderRadius: "50%", boxShadow: "0 0 6px #ff6ef7" }} />
-            <span style={{ width: "8px", height: "8px", background: "#ffd166", borderRadius: "50%", boxShadow: "0 0 6px #ffd166" }} />
-            <span style={{ width: "8px", height: "8px", background: "#7efff5", borderRadius: "50%", boxShadow: "0 0 6px #7efff5" }} />
-            <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#c77dff", letterSpacing: "0.1em", marginLeft: "8px" }}>AUTH.EXE</span>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "#9b7fbf", marginLeft: "auto" }}>register_module v1.0</span>
+          {/* Logo */}
+          <div style={{ textAlign: "center", marginBottom: "36px" }}>
+            <Link href="/" style={{ fontFamily: "var(--font-pixel)", fontSize: "1.4rem", color: "#c77dff", textDecoration: "none", textShadow: "0 0 15px #9d4edd,0 0 40px rgba(157,78,221,0.4),3px 3px 0 #3c096c" }}>
+              JESS<span style={{ color: "#ff6ef7" }}>.</span>
+            </Link>
+            <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#9b7fbf", letterSpacing: "0.2em", marginTop: "10px" }}>
+              CREATE NEW ACCOUNT
+            </div>
           </div>
 
-          <div style={{ padding: "32px 28px" }}>
-            <h1 style={{ fontFamily: "var(--font-pixel)", fontSize: "0.8rem", color: "#fff", letterSpacing: "0.1em", textShadow: "0 0 10px rgba(199,125,255,0.5)", marginBottom: "28px" }}>
-              REGISTER
-            </h1>
-
-            {error && (
-              <div style={{ marginBottom: "18px", padding: "12px 16px", background: "rgba(255,50,50,0.1)", border: "1px solid rgba(255,110,247,0.3)", fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "#ff6ef7", display: "flex", gap: "8px", alignItems: "flex-start" }}>
-                <span>⚠</span><span>{error}</span>
-              </div>
-            )}
-
-            {success && (
-              <div style={{ marginBottom: "18px", padding: "12px 16px", background: "rgba(126,255,245,0.08)", border: "1px solid rgba(126,255,245,0.3)", fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#7efff5", letterSpacing: "0.1em", textShadow: "0 0 8px #7efff5", lineHeight: 1.8 }}>
-                ✓ {success}
-              </div>
-            )}
-
-            {/* USERNAME */}
-            <div style={{ marginBottom: "16px" }}>
-              <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>USERNAME</div>
-              <input
-                type="text" name="USERNAME" value={form.USERNAME}
-                onChange={handleChange} placeholder="// min. 3 chars"
-                style={inputBase} onFocus={focusOn} onBlur={focusOff}
-              />
+          {/* Card — data-tilt enables mouse tilt from ParallaxScene */}
+          <div
+            data-tilt
+            style={{
+              background: "rgba(13,0,24,0.9)",
+              border: "1px solid rgba(157,78,221,0.3)",
+              borderRadius: "2px",
+              overflow: "hidden",
+              boxShadow: "0 0 40px rgba(157,78,221,0.15), 0 0 80px rgba(157,78,221,0.05)",
+              transition: "box-shadow 0.3s ease",
+            }}
+          >
+            {/* Terminal bar */}
+            <div style={{ background: "rgba(60,9,108,0.4)", padding: "10px 20px", borderBottom: "1px solid rgba(157,78,221,0.2)", display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ width: "8px", height: "8px", background: "#ff6ef7", borderRadius: "50%", boxShadow: "0 0 6px #ff6ef7" }} />
+              <span style={{ width: "8px", height: "8px", background: "#ffd166", borderRadius: "50%", boxShadow: "0 0 6px #ffd166" }} />
+              <span style={{ width: "8px", height: "8px", background: "#7efff5", borderRadius: "50%", boxShadow: "0 0 6px #7efff5" }} />
+              <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#c77dff", letterSpacing: "0.1em", marginLeft: "8px" }}>AUTH.EXE</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.65rem", color: "#9b7fbf", marginLeft: "auto" }}>register_module v1.0</span>
             </div>
 
-            {/* EMAIL */}
-            <div style={{ marginBottom: "16px" }}>
-              <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>EMAIL</div>
-              <input
-                type="email" name="EMAIL" value={form.EMAIL}
-                onChange={handleChange} placeholder="// your@email.com"
-                autoComplete="email"
-                style={{
-                  ...inputBase,
-                  borderColor: form.EMAIL
-                    ? isValidEmail(form.EMAIL) ? "rgba(126,255,245,0.4)" : "rgba(255,110,247,0.5)"
-                    : "rgba(157,78,221,0.3)",
-                }}
-                onFocus={focusOn}
-                onBlur={(e) => {
-                  e.target.style.borderColor = form.EMAIL
-                    ? isValidEmail(form.EMAIL) ? "rgba(126,255,245,0.4)" : "rgba(255,110,247,0.5)"
-                    : "rgba(157,78,221,0.3)";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
-              {form.EMAIL && !isValidEmail(form.EMAIL) && (
-                <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: "#ff6ef7", marginTop: "6px", letterSpacing: "0.1em" }}>
-                  ✕ FORMAT EMAIL TIDAK VALID
+            <div style={{ padding: "32px 28px" }}>
+              <h1 style={{ fontFamily: "var(--font-pixel)", fontSize: "0.8rem", color: "#fff", letterSpacing: "0.1em", textShadow: "0 0 10px rgba(199,125,255,0.5)", marginBottom: "28px" }}>
+                REGISTER
+              </h1>
+
+              {error && (
+                <div style={{ marginBottom: "18px", padding: "12px 16px", background: "rgba(255,50,50,0.1)", border: "1px solid rgba(255,110,247,0.3)", fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "#ff6ef7", display: "flex", gap: "8px", alignItems: "flex-start" }}>
+                  <span>⚠</span><span>{error}</span>
                 </div>
               )}
-            </div>
 
-            {/* PASSWORD */}
-            <div style={{ marginBottom: "16px" }}>
-              <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>PASSWORD</div>
-              <div style={{ position: "relative" }}>
+              {success && (
+                <div style={{ marginBottom: "18px", padding: "12px 16px", background: "rgba(126,255,245,0.08)", border: "1px solid rgba(126,255,245,0.3)", fontFamily: "var(--font-pixel)", fontSize: "0.4rem", color: "#7efff5", letterSpacing: "0.1em", textShadow: "0 0 8px #7efff5", lineHeight: 1.8 }}>
+                  ✓ {success}
+                </div>
+              )}
+
+              {/* USERNAME */}
+              <div style={{ marginBottom: "16px" }}>
+                <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>USERNAME</div>
                 <input
-                  type={showPass ? "text" : "password"}
-                  name="PASSWORD" value={form.PASSWORD}
-                  onChange={handleChange} placeholder="// min. 6 chars"
-                  autoComplete="new-password"
-                  style={{ ...inputBase, paddingRight: "44px" }}
-                  onFocus={focusOn} onBlur={focusOff}
+                  type="text" name="USERNAME" value={form.USERNAME}
+                  onChange={handleChange} placeholder="// min. 3 chars"
+                  style={inputBase} onFocus={focusOn} onBlur={focusOff}
                 />
-                <button type="button" onClick={() => setShowPass((v) => !v)}
-                  style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: showPass ? "#c77dff" : "#9b7fbf", padding: "2px", display: "flex", alignItems: "center", transition: "color 0.2s" }}
-                  aria-label={showPass ? "Sembunyikan password" : "Tampilkan password"}>
-                  {showPass ? <EyeOff /> : <EyeOpen />}
-                </button>
               </div>
-              {form.PASSWORD && (
-                <div style={{ marginTop: "8px" }}>
-                  <div style={{ display: "flex", gap: "3px", marginBottom: "5px" }}>
-                    {[1,2,3,4,5].map((i) => (
-                      <div key={i} style={{ flex: 1, height: "3px", background: i <= strength ? strengthColors[strength] : "rgba(60,9,108,0.5)", boxShadow: i <= strength ? `0 0 6px ${strengthColors[strength]}60` : "none", transition: "all 0.3s" }} />
-                    ))}
-                  </div>
-                  <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: strengthColors[strength], letterSpacing: "0.1em", textShadow: `0 0 6px ${strengthColors[strength]}60` }}>
-                    {strengthLabels[strength]}
-                  </span>
-                </div>
-              )}
-            </div>
 
-            {/* CONFIRM PASSWORD */}
-            <div style={{ marginBottom: "28px" }}>
-              <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>CONFIRM PASSWORD</div>
-              <div style={{ position: "relative" }}>
+              {/* EMAIL */}
+              <div style={{ marginBottom: "16px" }}>
+                <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>EMAIL</div>
                 <input
-                  type={showConf ? "text" : "password"}
-                  name="CONFIRM" value={form.CONFIRM}
-                  onChange={handleChange} placeholder="// repeat password"
-                  autoComplete="new-password"
+                  type="email" name="EMAIL" value={form.EMAIL}
+                  onChange={handleChange} placeholder="// your@email.com"
+                  autoComplete="email"
                   style={{
                     ...inputBase,
-                    paddingRight: "44px",
-                    borderColor: form.CONFIRM
-                      ? form.PASSWORD !== form.CONFIRM ? "rgba(255,110,247,0.5)" : "rgba(126,255,245,0.4)"
+                    borderColor: form.EMAIL
+                      ? isValidEmail(form.EMAIL) ? "rgba(126,255,245,0.4)" : "rgba(255,110,247,0.5)"
                       : "rgba(157,78,221,0.3)",
                   }}
-                  onFocus={focusOn} onBlur={focusOff}
-                  onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                  onFocus={focusOn}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = form.EMAIL
+                      ? isValidEmail(form.EMAIL) ? "rgba(126,255,245,0.4)" : "rgba(255,110,247,0.5)"
+                      : "rgba(157,78,221,0.3)";
+                    e.target.style.boxShadow = "none";
+                  }}
                 />
-                <button type="button" onClick={() => setShowConf((v) => !v)}
-                  style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: showConf ? "#c77dff" : "#9b7fbf", padding: "2px", display: "flex", alignItems: "center", transition: "color 0.2s" }}
-                  aria-label={showConf ? "Sembunyikan password" : "Tampilkan password"}>
-                  {showConf ? <EyeOff /> : <EyeOpen />}
-                </button>
+                {form.EMAIL && !isValidEmail(form.EMAIL) && (
+                  <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: "#ff6ef7", marginTop: "6px", letterSpacing: "0.1em" }}>
+                    ✕ FORMAT EMAIL TIDAK VALID
+                  </div>
+                )}
               </div>
-              {form.CONFIRM && form.PASSWORD !== form.CONFIRM && (
-                <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: "#ff6ef7", marginTop: "6px", letterSpacing: "0.1em" }}>✕ PASSWORD MISMATCH</div>
-              )}
-              {form.CONFIRM && form.PASSWORD === form.CONFIRM && (
-                <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: "#7efff5", marginTop: "6px", letterSpacing: "0.1em", textShadow: "0 0 6px #7efff580" }}>✓ PASSWORDS MATCH</div>
-              )}
-            </div>
 
-            {/* Submit */}
-            <button
-              onClick={handleSubmit} disabled={loading || !!success} className="btn-pixel"
-              style={{
-                width: "100%", padding: "13px",
-                background: (loading || !!success) ? "rgba(60,9,108,0.4)" : "rgba(157,78,221,0.35)",
-                border: "1px solid rgba(157,78,221,0.6)", borderRadius: "2px",
-                color: "#fff", cursor: (loading || !!success) ? "not-allowed" : "pointer",
-                fontFamily: "var(--font-pixel)", fontSize: "0.5rem", letterSpacing: "0.15em",
-                boxShadow: (loading || !!success) ? "none" : "0 0 20px rgba(157,78,221,0.3)",
-                display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
-              }}
-            >
-              {loading ? (
-                <>
-                  <svg className="animate-spin" width="14" height="14" fill="none" viewBox="0 0 24 24">
-                    <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  REGISTERING...
-                </>
-              ) : "+ CREATE ACCOUNT"}
-            </button>
+              {/* PASSWORD */}
+              <div style={{ marginBottom: "16px" }}>
+                <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>PASSWORD</div>
+                <div style={{ position: "relative" }}>
+                  <input
+                    type={showPass ? "text" : "password"}
+                    name="PASSWORD" value={form.PASSWORD}
+                    onChange={handleChange} placeholder="// min. 6 chars"
+                    autoComplete="new-password"
+                    style={{ ...inputBase, paddingRight: "44px" }}
+                    onFocus={focusOn} onBlur={focusOff}
+                  />
+                  <button type="button" onClick={() => setShowPass((v) => !v)}
+                    style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: showPass ? "#c77dff" : "#9b7fbf", padding: "2px", display: "flex", alignItems: "center", transition: "color 0.2s" }}
+                    aria-label={showPass ? "Sembunyikan password" : "Tampilkan password"}>
+                    {showPass ? <EyeOff /> : <EyeOpen />}
+                  </button>
+                </div>
+                {form.PASSWORD && (
+                  <div style={{ marginTop: "8px" }}>
+                    <div style={{ display: "flex", gap: "3px", marginBottom: "5px" }}>
+                      {[1,2,3,4,5].map((i) => (
+                        <div key={i} style={{ flex: 1, height: "3px", background: i <= strength ? strengthColors[strength] : "rgba(60,9,108,0.5)", boxShadow: i <= strength ? `0 0 6px ${strengthColors[strength]}60` : "none", transition: "all 0.3s" }} />
+                      ))}
+                    </div>
+                    <span style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: strengthColors[strength], letterSpacing: "0.1em", textShadow: `0 0 6px ${strengthColors[strength]}60` }}>
+                      {strengthLabels[strength]}
+                    </span>
+                  </div>
+                )}
+              </div>
 
-            <div style={{ textAlign: "center", marginTop: "24px", fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "#9b7fbf" }}>
-              Have an account?{" "}
-              <Link href="/login" style={{ color: "#c77dff", textDecoration: "none", textShadow: "0 0 6px rgba(199,125,255,0.5)" }}>
-                Login here →
-              </Link>
+              {/* CONFIRM PASSWORD */}
+              <div style={{ marginBottom: "28px" }}>
+                <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", letterSpacing: "0.15em", marginBottom: "8px" }}>CONFIRM PASSWORD</div>
+                <div style={{ position: "relative" }}>
+                  <input
+                    type={showConf ? "text" : "password"}
+                    name="CONFIRM" value={form.CONFIRM}
+                    onChange={handleChange} placeholder="// repeat password"
+                    autoComplete="new-password"
+                    style={{
+                      ...inputBase,
+                      paddingRight: "44px",
+                      borderColor: form.CONFIRM
+                        ? form.PASSWORD !== form.CONFIRM ? "rgba(255,110,247,0.5)" : "rgba(126,255,245,0.4)"
+                        : "rgba(157,78,221,0.3)",
+                    }}
+                    onFocus={focusOn} onBlur={focusOff}
+                    onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                  />
+                  <button type="button" onClick={() => setShowConf((v) => !v)}
+                    style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: showConf ? "#c77dff" : "#9b7fbf", padding: "2px", display: "flex", alignItems: "center", transition: "color 0.2s" }}
+                    aria-label={showConf ? "Sembunyikan password" : "Tampilkan password"}>
+                    {showConf ? <EyeOff /> : <EyeOpen />}
+                  </button>
+                </div>
+                {form.CONFIRM && form.PASSWORD !== form.CONFIRM && (
+                  <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: "#ff6ef7", marginTop: "6px", letterSpacing: "0.1em" }}>✕ PASSWORD MISMATCH</div>
+                )}
+                {form.CONFIRM && form.PASSWORD === form.CONFIRM && (
+                  <div style={{ fontFamily: "var(--font-pixel)", fontSize: "0.35rem", color: "#7efff5", marginTop: "6px", letterSpacing: "0.1em", textShadow: "0 0 6px #7efff580" }}>✓ PASSWORDS MATCH</div>
+                )}
+              </div>
+
+              {/* Submit */}
+              <button
+                onClick={handleSubmit} disabled={loading || !!success} className="btn-pixel"
+                style={{
+                  width: "100%", padding: "13px",
+                  background: (loading || !!success) ? "rgba(60,9,108,0.4)" : "rgba(157,78,221,0.35)",
+                  border: "1px solid rgba(157,78,221,0.6)", borderRadius: "2px",
+                  color: "#fff", cursor: (loading || !!success) ? "not-allowed" : "pointer",
+                  fontFamily: "var(--font-pixel)", fontSize: "0.5rem", letterSpacing: "0.15em",
+                  boxShadow: (loading || !!success) ? "none" : "0 0 20px rgba(157,78,221,0.3)",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
+                }}
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin" width="14" height="14" fill="none" viewBox="0 0 24 24">
+                      <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    REGISTERING...
+                  </>
+                ) : "+ CREATE ACCOUNT"}
+              </button>
+
+              <div style={{ textAlign: "center", marginTop: "24px", fontFamily: "var(--font-mono)", fontSize: "0.78rem", color: "#9b7fbf" }}>
+                Have an account?{" "}
+                <Link href="/login" style={{ color: "#c77dff", textDecoration: "none", textShadow: "0 0 6px rgba(199,125,255,0.5)" }}>
+                  Login here →
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div style={{ textAlign: "center", marginTop: "16px" }}>
-          <Link href="/" style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", textDecoration: "none", letterSpacing: "0.1em" }}>
-            ← BACK TO MAIN
-          </Link>
+          <div style={{ textAlign: "center", marginTop: "16px" }}>
+            <Link href="/" style={{ fontFamily: "var(--font-pixel)", fontSize: "0.38rem", color: "#9b7fbf", textDecoration: "none", letterSpacing: "0.1em" }}>
+              ← BACK TO MAIN
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -301,7 +303,9 @@ export default function RegisterPage() {
           from { opacity: 0; transform: translateY(24px); }
           to   { opacity: 1; transform: translateY(0); }
         }
+        .animate-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
-    </div>
+    </ParallaxScene>
   );
 }
