@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 
 // ── Constants ──────────────────────────────────────────────
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4002/api";
+  process.env.NEXT_PUBLIC_API_URL;
 
 const COOKIE_TOKEN = "auth_token";
 const COOKIE_USER  = "auth_user";

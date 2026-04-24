@@ -6,14 +6,12 @@ export const metadata: Metadata = {
   title: "Jess. | Portfolio",
   description: "Jesseline Roniar – Game Developer & Web Programmer",
   icons: {
-    // ✅ Taruh file icon.png / favicon.ico di folder /public/
     icon: [
-      { url: "/favicon.ico",             sizes: "any" },
       { url: "/icon.png",  type: "image/png", sizes: "32x32" },
       { url: "/icon192.png", type: "image/png", sizes: "192x192" },
     ],
     apple: "/apple-icon.png",
-    shortcut: "/favicon.ico",
+    shortcut: "/Seline-Edited-1.png",
   },
 };
 
