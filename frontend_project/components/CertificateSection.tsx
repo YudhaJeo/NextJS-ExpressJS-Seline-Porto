@@ -51,8 +51,7 @@ export default function CertificateSection() {
           <div style={{ marginTop:"12px",width:"60px",height:"3px",background:"linear-gradient(90deg,#9d4edd,#ffd166)",boxShadow:"0 0 10px rgba(157,78,221,0.6)" }} />
         </div>
 
-
-        <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"20px" }}>
+        <div className="cert-grid" style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"20px" }}>
           {certificates.map((cert, i) => (
             <a
               key={cert.label}
@@ -99,7 +98,26 @@ export default function CertificateSection() {
         </div>
       </div>
 
-      <style>{`@keyframes rippleAnim{to{transform:scale(4);opacity:0}}`}</style>
+      <style>{`
+        @keyframes rippleAnim { to { transform:scale(4); opacity:0 } }
+
+        .cert-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        @media (max-width: 900px) {
+          .cert-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+
+        @media (max-width: 560px) {
+          .cert-grid {
+            grid-template-columns: 1fr !important;
+            gap: 14px !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
