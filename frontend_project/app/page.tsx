@@ -3,6 +3,10 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import CommentSection from "@/components/CommentSection";
+import CoreSkillsSection from "@/components/CoreSkillsSection";
+import ContactSection from "@/components/ContactSection";
+import ShowcaseSection from "@/components/ShowcaseSection";
+import CertificateSection from "@/components/CertificateSection";
 import SnowOverlay from "@/components/SnowOverlay";
 import ParallaxScene from "@/components/ParallaxScene";
 import Footer from "@/components/Footer";
@@ -11,10 +15,14 @@ export default function Home() {
   return (
     <ParallaxScene>
       <SnowOverlay />
-      <Navbar activePage="home" />
+      <Navbar />
       <main>
-        <HeroSection />
-        <AboutSection />
+        <section id="home"><HeroSection /></section>
+        <section id="about"><AboutSection /></section>
+        <section id="skills"><CoreSkillsSection /></section>
+        <section id="showcase"><ShowcaseSection /></section>
+        <section id="contact"><ContactSection /></section>
+        <section id="certificates"><CertificateSection /></section>
         <CommentSection />
       </main>
       <Footer />

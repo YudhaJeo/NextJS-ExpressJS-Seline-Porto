@@ -5,17 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getUser, clearAuth, type AuthUser } from "@/lib/api";
 
-interface NavbarProps {
-  activePage?: "home" | "skills";
-}
-
-export default function Navbar({ activePage = "home" }: NavbarProps) {
+export default function Navbar() {
   const router = useRouter();
-  const [menuOpen,    setMenuOpen]    = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [user,        setUser]        = useState<AuthUser | null>(null);
-  const [scrolled,    setScrolled]    = useState(false);
-  const [isMobile,    setIsMobile]    = useState(false);
+  const [menuOpen,      setMenuOpen]      = useState(false);
+  const [profileOpen,   setProfileOpen]   = useState(false);
+  const [user,          setUser]          = useState<AuthUser | null>(null);
+  const [scrolled,      setScrolled]      = useState(false);
+  const [isMobile,      setIsMobile]      = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
   const syncUser = () => setUser(getUser());
 
@@ -42,10 +39,26 @@ export default function Navbar({ activePage = "home" }: NavbarProps) {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Close mobile menu on resize to desktop
   useEffect(() => {
     if (!isMobile) setMenuOpen(false);
   }, [isMobile]);
+
+  useEffect(() => {
+    const sections = ["home", "about", "skills", "contact", "certs"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px" }
+    );
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
 
   const handleLogout = () => {
     clearAuth();
@@ -60,10 +73,11 @@ export default function Navbar({ activePage = "home" }: NavbarProps) {
   const initials = user?.USERNAME?.slice(0, 2).toUpperCase() ?? "??";
 
   const navLinks = [
-    { label: "Home",        href: activePage === "home"   ? "#home"           : "/#home",           active: activePage === "home" },
-    { label: "About Me",    href: activePage === "home"   ? "#about"          : "/#about",          active: activePage === "home" },
-    { label: "Core Skills", href: activePage === "skills" ? "#skills"         : "/skills#skills",   active: activePage === "skills" },
-    { label: "Contact",     href: activePage === "skills" ? "#contact"        : "/skills#contact",  active: activePage === "skills" },
+    { label: "Home",        href: "#home",    id: "home" },
+    { label: "About Me",    href: "#about",   id: "about" },
+    { label: "Core Skills", href: "#skills",  id: "skills" },
+    { label: "Contact",     href: "#contact", id: "contact" },
+    { label: "Showcase",    href: "#certs",   id: "certs" },
   ];
 
   return (
@@ -115,32 +129,35 @@ export default function Navbar({ activePage = "home" }: NavbarProps) {
           Jess<span style={{ color: "#ff6ef7", textShadow: "0 0 10px #ff6ef7" }}>.</span>
         </Link>
 
-        {/* ── Desktop nav links (hidden on mobile) ── */}
+        {/* ── Desktop nav links ── */}
         <div className="nav-desktop-links" style={{ gap: "8px", alignItems: "center" }}>
-          {navLinks.map(({ label, href, active }) => (
-            <a
-              key={label}
-              href={href}
-              style={{
-                fontFamily:     "var(--font-pixel)",
-                fontSize:       "0.45rem",
-                padding:        "7px 10px",
-                borderRadius:   "2px",
-                border:         active ? "1px solid rgba(157,78,221,0.65)" : "1px solid rgba(157,78,221,0.28)",
-                background:     active ? "rgba(157,78,221,0.22)" : "transparent",
-                color:          active ? "#ffffff" : "#b89fd4",
-                textDecoration: "none",
-                letterSpacing:  "0.08em",
-                transition:     "all 0.2s",
-                whiteSpace:     "nowrap",
-              }}
-            >
-              {label}
-            </a>
-          ))}
-        </div>
+          {navLinks.map(({ label, href, id }) => {
+            const active = activeSection === id;
+            return (
+              <a
+                key={label}
+                href={href}
+                style={{
+                  fontFamily:     "var(--font-pixel)",
+                  fontSize:       "0.45rem",
+                  padding:        "7px 10px",
+                  borderRadius:   "2px",
+                  border:         active ? "1px solid rgba(157,78,221,0.65)" : "1px solid rgba(157,78,221,0.28)",
+                  background:     active ? "rgba(157,78,221,0.22)" : "transparent",
+                  color:          active ? "#ffffff" : "#b89fd4",
+                  textDecoration: "none",
+                  letterSpacing:  "0.08em",
+                  transition:     "all 0.2s",
+                  whiteSpace:     "nowrap",
+                }}
+              >
+                {label}
+              </a>
+            );
+          })}
+        </div> {/* ← penutup .nav-desktop-links */}
 
-        {/* ── Desktop Auth (hidden on mobile) ── */}
+        {/* ── Desktop Auth ── */}
         <div className="nav-desktop-auth" style={{ alignItems: "center", gap: "8px" }}>
           {user ? (
             <div style={{ position: "relative" }}>
@@ -280,19 +297,19 @@ export default function Navbar({ activePage = "home" }: NavbarProps) {
               </Link>
             </div>
           )}
-        </div>
+        </div> {/* ← penutup .nav-desktop-auth */}
 
-        {/* ── Mobile hamburger (hidden on desktop) ── */}
+        {/* ── Mobile hamburger ── */}
         <button
           className="nav-hamburger"
           onClick={() => setMenuOpen(!menuOpen)}
           style={{
-            alignItems:  "center",
-            background:  "transparent",
-            border:      "none",
-            color:       "#c77dff",
-            cursor:      "pointer",
-            padding:     "4px",
+            alignItems: "center",
+            background: "transparent",
+            border:     "none",
+            color:      "#c77dff",
+            cursor:     "pointer",
+            padding:    "4px",
           }}
           aria-label="Toggle menu"
         >
@@ -302,7 +319,7 @@ export default function Navbar({ activePage = "home" }: NavbarProps) {
               : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
           </svg>
         </button>
-      </nav>
+      </nav> {/* ← penutup <nav> */}
 
       {/* ── Mobile dropdown menu ── */}
       {menuOpen && isMobile && (
@@ -322,24 +339,27 @@ export default function Navbar({ activePage = "home" }: NavbarProps) {
             backdropFilter: "blur(16px)",
           }}
         >
-          {navLinks.map(({ label, href, active }) => (
-            <a
-              key={label}
-              href={href}
-              onClick={() => setMenuOpen(false)}
-              style={{
-                fontFamily:     "var(--font-pixel)",
-                fontSize:       "0.5rem",
-                color:          active ? "#c77dff" : "#9b7fbf",
-                textDecoration: "none",
-                letterSpacing:  "0.08em",
-                padding:        "8px 0",
-                borderBottom:   "1px solid rgba(157,78,221,0.1)",
-              }}
-            >
-              {active ? "▶ " : "  "}{label}
-            </a>
-          ))}
+          {navLinks.map(({ label, href, id }) => {
+            const active = activeSection === id;
+            return (
+              <a
+                key={label}
+                href={href}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  fontFamily:     "var(--font-pixel)",
+                  fontSize:       "0.5rem",
+                  color:          active ? "#c77dff" : "#9b7fbf",
+                  textDecoration: "none",
+                  letterSpacing:  "0.08em",
+                  padding:        "8px 0",
+                  borderBottom:   "1px solid rgba(157,78,221,0.1)",
+                }}
+              >
+                {active ? "▶ " : "  "}{label}
+              </a>
+            );
+          })}
 
           <div style={{ borderTop: "1px solid rgba(157,78,221,0.2)", paddingTop: "12px" }}>
             {user ? (
@@ -369,15 +389,15 @@ export default function Navbar({ activePage = "home" }: NavbarProps) {
                 <button
                   onClick={handleLogout}
                   style={{
-                    background:  "none",
-                    border:      "1px solid rgba(255,110,247,0.3)",
-                    borderRadius: "2px",
-                    color:       "#ff6ef7",
-                    fontFamily:  "var(--font-pixel)",
-                    fontSize:    "0.45rem",
-                    cursor:      "pointer",
-                    padding:     "8px 12px",
-                    textAlign:   "left",
+                    background:    "none",
+                    border:        "1px solid rgba(255,110,247,0.3)",
+                    borderRadius:  "2px",
+                    color:         "#ff6ef7",
+                    fontFamily:    "var(--font-pixel)",
+                    fontSize:      "0.45rem",
+                    cursor:        "pointer",
+                    padding:       "8px 12px",
+                    textAlign:     "left",
                     letterSpacing: "0.08em",
                   }}
                 >
