@@ -12,10 +12,13 @@ const ASCII_JESS = `
 
 const LINKS = {
   Navigate: [
-    { label: "Home",        href: "/#home" },
-    { label: "About Me",    href: "/#about" },
-    { label: "Core Skills", href: "/skills#skills" },
-    { label: "Contact",     href: "/skills#contact" },
+    { label: "Home",         href: "#home" },
+    { label: "About Me",     href: "#about" },
+    { label: "Core Skills",  href: "#skills" },
+    { label: "Showcase",     href: "#showcase" },
+    { label: "Certificates", href: "#certificates" },
+    { label: "Contact",      href: "#contact" },
+    { label: "Comments",      href: "#comments" },
   ],
   Connect: [
     { label: "GitHub",    href: "https://github.com/" },
