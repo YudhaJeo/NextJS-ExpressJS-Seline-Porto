@@ -107,7 +107,7 @@ export default function HeroSection() {
 
           <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", animation: "fadeInUp 0.6s 0.5s both" }}>
             <a href="#about" className="btn-pixel" onClick={ripple} style={{ display: "inline-block", padding: "12px 24px", background: "rgba(157,78,221,0.3)", border: "1px solid #9d4edd", borderRadius: "2px", color: "#fff", textDecoration: "none", fontFamily: "var(--font-pixel)", fontSize: "0.5rem", letterSpacing: "0.1em", boxShadow: "0 0 20px rgba(157,78,221,0.3)" }}>▼ ABOUT ME</a>
-            <a href="/skills" className="btn-pixel" onClick={ripple} style={{ display: "inline-block", padding: "12px 24px", background: "transparent", border: "1px solid rgba(157,78,221,0.4)", borderRadius: "2px", color: "#c77dff", textDecoration: "none", fontFamily: "var(--font-pixel)", fontSize: "0.5rem", letterSpacing: "0.1em" }}>→ CORE SKILLS</a>
+            <a href="#skills" className="btn-pixel" onClick={ripple} style={{ display: "inline-block", padding: "12px 24px", background: "transparent", border: "1px solid rgba(157,78,221,0.4)", borderRadius: "2px", color: "#c77dff", textDecoration: "none", fontFamily: "var(--font-pixel)", fontSize: "0.5rem", letterSpacing: "0.1em" }}>→ CORE SKILLS</a>
           </div>
         </div>
 
