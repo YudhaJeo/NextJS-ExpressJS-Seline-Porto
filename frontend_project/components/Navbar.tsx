@@ -116,7 +116,7 @@ export default function Navbar() {
         }}
       >
         {/* ── Logo ── */}
-        <Link
+        <a
           href="#home"
           className="glitch-wrap"
           data-text="JESS."
@@ -141,7 +141,7 @@ export default function Navbar() {
           }}
         >
           JESS<span style={{ color: "#ff6ef7", textShadow: "0 0 10px #ff6ef7, 0 0 30px rgba(255,110,247,0.6)" }}>.</span>
-        </Link>
+        </a>
 
         {/* ── Desktop nav links ── */}
         <div className="nav-desktop-links" style={{ gap: "8px", alignItems: "center" }}>
