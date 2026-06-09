@@ -21,8 +21,8 @@ export default function Home() {
         <section id="about"><AboutSection /></section>
         <section id="skills"><CoreSkillsSection /></section>
         <section id="showcase"><ShowcaseSection /></section>
-        <section id="contact"><ContactSection /></section>
         <section id="certificates"><CertificateSection /></section>
+        <section id="contact"><ContactSection /></section>
         <CommentSection />
       </main>
       <Footer />

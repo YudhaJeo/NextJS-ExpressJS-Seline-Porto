@@ -161,7 +161,7 @@ export default function CommentSection() {
             // GUESTBOOK.DB
           </div>
           <h2 style={{ fontFamily: "var(--font-pixel)", fontSize: "clamp(1rem, 3vw, 1.6rem)", color: "#fff", textShadow: "0 0 20px #c77dff, 0 0 40px rgba(157,78,221,0.4), 3px 3px 0 #3c096c", letterSpacing: "0.05em", lineHeight: 1.6 }}>
-            KOMENTAR
+            COMMENTS
           </h2>
           <div style={{ marginTop: "12px", width: "60px", height: "3px", background: "linear-gradient(90deg, #7efff5, #9d4edd)", boxShadow: "0 0 10px rgba(126,255,245,0.4)" }} />
         </div>

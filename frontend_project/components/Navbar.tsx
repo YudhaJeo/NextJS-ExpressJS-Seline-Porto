@@ -44,7 +44,7 @@ export default function Navbar() {
   }, [isMobile]);
 
   useEffect(() => {
-    const sections = ["home", "about", "skills", "contact", "certs"];
+    const sections = ["home", "about", "skills", "showcase", "certificates", "contact", "comments"];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -73,11 +73,13 @@ export default function Navbar() {
   const initials = user?.USERNAME?.slice(0, 2).toUpperCase() ?? "??";
 
   const navLinks = [
-    { label: "Home",        href: "#home",    id: "home" },
-    { label: "About Me",    href: "#about",   id: "about" },
-    { label: "Core Skills", href: "#skills",  id: "skills" },
-    { label: "Contact",     href: "#contact", id: "contact" },
-    { label: "Showcase",    href: "#certs",   id: "certs" },
+    { label: "Home",         href: "#home",         id: "home" },
+    { label: "About Me",     href: "#about",        id: "about" },
+    { label: "Core Skills",  href: "#skills",       id: "skills" },
+    { label: "Showcase",     href: "#showcase",     id: "showcase" },
+    { label: "Certificates", href: "#certificates", id: "certificates" },
+    { label: "Contact",      href: "#contact",      id: "contact" },
+    { label: "Comments",     href: "#comments",      id: "comments" },
   ];
 
   return (
@@ -115,18 +117,30 @@ export default function Navbar() {
       >
         {/* ── Logo ── */}
         <Link
-          href="/"
+          href="#home"
+          className="glitch-wrap"
+          data-text="JESS."
           style={{
             fontFamily:     "var(--font-pixel)",
-            fontSize:       "1rem",
-            color:          "#c77dff",
+            fontSize:       "1.1rem",
+            color:          "#fff",
             textDecoration: "none",
-            textShadow:     "0 0 10px #9d4edd, 0 0 30px rgba(157,78,221,0.5)",
+            textShadow:     "0 0 20px #c77dff, 0 0 50px rgba(157,78,221,0.5), 3px 3px 0 #3c096c",
             letterSpacing:  "0.05em",
             flexShrink:     0,
+            position:       "relative",
+            transition:     "text-shadow 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.textShadow =
+              "0 0 30px #c77dff, 0 0 60px rgba(157,78,221,0.8), 0 0 90px rgba(199,125,255,0.4), 3px 3px 0 #3c096c";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.textShadow =
+              "0 0 20px #c77dff, 0 0 50px rgba(157,78,221,0.5), 3px 3px 0 #3c096c";
           }}
         >
-          Jess<span style={{ color: "#ff6ef7", textShadow: "0 0 10px #ff6ef7" }}>.</span>
+          JESS<span style={{ color: "#ff6ef7", textShadow: "0 0 10px #ff6ef7, 0 0 30px rgba(255,110,247,0.6)" }}>.</span>
         </Link>
 
         {/* ── Desktop nav links ── */}
