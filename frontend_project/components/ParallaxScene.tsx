@@ -71,7 +71,7 @@ const CODE_FRAGMENTS = [
 
 /* seeded random so SSR & client agree */
 function seededRand(seed: number) {
-  const x = Math.sin(seed) * 10000;
+  const x = Math.sin(seed) * 8000;
   return x - Math.floor(x);
 }
 
@@ -89,13 +89,13 @@ interface FragmentDef {
 }
 
 const FRAGMENTS: FragmentDef[] = CODE_FRAGMENTS.map((text, i) => {
-  const r = (o: number) => seededRand(i * 31 + o);
+  const r = (o: number) => seededRand(i * 21 + o);
   return {
     id:       i,
     text,
     top:      `${(r(1) * 90).toFixed(2)}%`,
     left:     `${(r(2) * 90).toFixed(2)}%`,
-    opacity:  +(r(3) * 0.25 + 0.05).toFixed(3),
+    opacity:  +(r(1) * 0.15 + 0.05).toFixed(3),
     fontSize: `${(r(4) * 0.35 + 0.45).toFixed(2)}rem`,
     color:    r(5) > 0.6 ? "#c77dff" : r(5) > 0.3 ? "#7efff5" : "#ff6ef7",
     duration: `${(r(6) * 10 + 12).toFixed(1)}s`,
@@ -116,7 +116,7 @@ interface ParticleDef {
   delay: string;
 }
 
-const PARTICLES: ParticleDef[] = Array.from({ length: 28 }, (_, i) => {
+const PARTICLES: ParticleDef[] = Array.from({ length: 14 }, (_, i) => {
   const r = (o: number) => seededRand(i * 17 + o + 200);
   const palette = ["#9d4edd", "#c77dff", "#ff6ef7", "#7efff5", "#ffd166"];
   const col = palette[Math.floor(r(5) * palette.length)];
@@ -267,10 +267,9 @@ export default function ParallaxScene({ children }: { children: React.ReactNode 
         }} />
 
         {/* Radial blobs */}
-        <div style={{ position:"absolute", top:"20%",  left:"55%",  width:"800px", height:"800px", borderRadius:"50%", background:"radial-gradient(circle,rgba(157,78,221,0.14) 0%,transparent 70%)", transform:"translate(-50%,-50%)" }} />
-        <div style={{ position:"absolute", top:"65%",  left:"15%",  width:"500px", height:"500px", borderRadius:"50%", background:"radial-gradient(circle,rgba(255,110,247,0.07) 0%,transparent 70%)" }} />
-        <div style={{ position:"absolute", top:"10%",  left:"10%",  width:"400px", height:"400px", borderRadius:"50%", background:"radial-gradient(circle,rgba(126,255,245,0.04) 0%,transparent 70%)" }} />
-        <div style={{ position:"absolute", top:"80%",  left:"75%",  width:"360px", height:"360px", borderRadius:"50%", background:"radial-gradient(circle,rgba(157,78,221,0.09) 0%,transparent 70%)" }} />
+        <div style={{ position:"absolute", top:"20%",  left:"55%",  width:"800px", height:"800px", borderRadius:"50%", background:"radial-gradient(circle,rgba(157,78,221,0.07) 0%,transparent 70%)", transform:"translate(-50%,-50%)" }} />
+        <div style={{ position:"absolute", top:"65%",  left:"15%",  width:"500px", height:"500px", borderRadius:"50%", background:"radial-gradient(circle,rgba(255,110,247,0.03) 0%,transparent 70%)" }} />
+        <div style={{ position:"absolute", top:"80%",  left:"75%",  width:"360px", height:"360px", borderRadius:"50%", background:"radial-gradient(circle,rgba(157,78,221,0.04) 0%,transparent 70%)" }} />
 
         {/* Scanline */}
         <div style={{
@@ -366,8 +365,8 @@ export default function ParallaxScene({ children }: { children: React.ReactNode 
         ))}
 
         {/* Large soft orbs */}
-        <div style={{ position:"absolute", top:"40%", left:"80%", width:"180px", height:"180px", borderRadius:"50%", background:"rgba(255,110,247,0.04)", filter:"blur(40px)", animation:"orbDrift 18s -4s ease-in-out infinite" }} />
-        <div style={{ position:"absolute", top:"70%", left:"5%",  width:"220px", height:"220px", borderRadius:"50%", background:"rgba(157,78,221,0.05)", filter:"blur(50px)", animation:"orbDrift 22s -10s ease-in-out infinite reverse" }} />
+        <div style={{ position:"absolute", top:"40%", left:"80%", width:"180px", height:"180px", borderRadius:"50%", background:"rgba(255,110,247,0.02)", filter:"blur(40px)", animation:"orbDrift 18s -4s ease-in-out infinite" }} />
+        <div style={{ position:"absolute", top:"70%", left:"5%",  width:"220px", height:"220px", borderRadius:"50%", background:"rgba(157,78,221,0.025)", filter:"blur(50px)", animation:"orbDrift 22s -10s ease-in-out infinite reverse" }} />
 
         {/* Corner accent brackets */}
         {mounted && (
@@ -397,8 +396,8 @@ export default function ParallaxScene({ children }: { children: React.ReactNode 
           66%     { transform: translateY(10px) translateX(-6px);  }
         }
         @keyframes particlePulse {
-          0%,100% { opacity: 0.15; transform: scale(1); }
-          50%     { opacity: 0.7;  transform: scale(1.6); }
+          0%,100% { opacity: 0.07; transform: scale(1); }
+          50%     { opacity: 0.35; transform: scale(1.3); }
         }
         @keyframes orbDrift {
           0%,100% { transform: translate(0,0); }

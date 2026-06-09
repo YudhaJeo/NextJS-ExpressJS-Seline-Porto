@@ -64,24 +64,25 @@ export default function SnowOverlay() {
       [255, 220, 255],
     ];
 
-    const kinds: FlakeKind[] = ["pixel", "pixel", "circle", "circle", "star", "cross", "pixel"];
+    // Lebih banyak circle/pixel biasa, kurangi star/cross agar tidak ramai
+    const kinds: FlakeKind[] = ["pixel", "pixel", "pixel", "circle", "circle", "star", "cross"];
 
-    const FLAKES = 200;
+    const FLAKES = 90; // dikurangi dari 200
     const makeFlake = (): Flake => ({
       x:            Math.random() * W,
       y:            Math.random() * H,
-      r:            Math.random() * 3 + 0.5,
-      speed:        Math.random() * 1.0 + 0.15,
-      drift:        (Math.random() - 0.5) * 0.5,
-      driftFreq:    Math.random() * 0.02 + 0.005,
-      driftAmp:     Math.random() * 1.5 + 0.3,
-      opacity:      Math.random() * 0.7 + 0.15,
+      r:            Math.random() * 2 + 0.4,          // lebih kecil
+      speed:        Math.random() * 0.6 + 0.1,        // lebih lambat
+      drift:        (Math.random() - 0.5) * 0.3,
+      driftFreq:    Math.random() * 0.015 + 0.004,
+      driftAmp:     Math.random() * 1.0 + 0.2,        // lebih sedikit goyang
+      opacity:      Math.random() * 0.45 + 0.08,      // lebih transparan
       twinkle:      Math.random() * Math.PI * 2,
-      twinkleSpeed: Math.random() * 0.05 + 0.01,
+      twinkleSpeed: Math.random() * 0.03 + 0.008,
       kind:         kinds[Math.floor(Math.random() * kinds.length)],
       color:        PALETTES[Math.floor(Math.random() * PALETTES.length)],
       rotation:     Math.random() * Math.PI * 2,
-      rotSpeed:     (Math.random() - 0.5) * 0.04,
+      rotSpeed:     (Math.random() - 0.5) * 0.02,
     });
 
     const flakes: Flake[] = Array.from({ length: FLAKES }, makeFlake);
@@ -94,7 +95,7 @@ export default function SnowOverlay() {
       for (const f of flakes) {
         f.twinkle  += f.twinkleSpeed;
         f.rotation += f.rotSpeed;
-        const alpha    = f.opacity * (0.6 + 0.4 * Math.sin(f.twinkle));
+        const alpha     = f.opacity * (0.6 + 0.4 * Math.sin(f.twinkle));
         const [r, g, b] = f.color;
 
         ctx.save();
@@ -106,35 +107,35 @@ export default function SnowOverlay() {
         switch (f.kind) {
           case "pixel": {
             const size = Math.max(1, Math.round(f.r)) * 2;
-            ctx.shadowBlur  = f.r > 1.5 ? 6 : 0;
-            ctx.shadowColor = `rgba(${r},${g},${b},0.8)`;
+            ctx.shadowBlur  = f.r > 1.5 ? 4 : 0;
+            ctx.shadowColor = `rgba(${r},${g},${b},0.6)`;
             ctx.fillStyle   = `rgb(${r},${g},${b})`;
             ctx.fillRect(px, py, size, size);
             break;
           }
           case "circle": {
-            const grad = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 3);
+            const grad = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 2.5);
             grad.addColorStop(0,   `rgba(${r},${g},${b},1)`);
-            grad.addColorStop(0.4, `rgba(${r},${g},${b},0.5)`);
+            grad.addColorStop(0.4, `rgba(${r},${g},${b},0.4)`);
             grad.addColorStop(1,   `rgba(${r},${g},${b},0)`);
             ctx.beginPath();
-            ctx.arc(f.x, f.y, f.r * 3, 0, Math.PI * 2);
+            ctx.arc(f.x, f.y, f.r * 2.5, 0, Math.PI * 2);
             ctx.fillStyle = grad;
             ctx.fill();
             break;
           }
           case "star": {
             ctx.fillStyle   = `rgb(${r},${g},${b})`;
-            ctx.shadowBlur  = 8;
-            ctx.shadowColor = `rgba(${r},${g},${b},0.9)`;
-            drawPixelStar(ctx, px, py, f.r * 0.7);
+            ctx.shadowBlur  = 5;
+            ctx.shadowColor = `rgba(${r},${g},${b},0.7)`;
+            drawPixelStar(ctx, px, py, f.r * 0.6);
             break;
           }
           case "cross": {
             ctx.fillStyle   = `rgb(${r},${g},${b})`;
-            ctx.shadowBlur  = 6;
-            ctx.shadowColor = `rgba(${r},${g},${b},0.8)`;
-            drawPixelCross(ctx, px, py, f.r * 0.5);
+            ctx.shadowBlur  = 4;
+            ctx.shadowColor = `rgba(${r},${g},${b},0.6)`;
+            drawPixelCross(ctx, px, py, f.r * 0.4);
             break;
           }
         }
@@ -164,11 +165,7 @@ export default function SnowOverlay() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none"
-      style={{
-        // ✅ FIX: z-index 1 — di bawah konten (z-index 3) tapi di atas background
-        zIndex: 1,
-        opacity: 0.9,
-      }}
+      style={{ zIndex: 1, opacity: 0.65 }}
     />
   );
 }

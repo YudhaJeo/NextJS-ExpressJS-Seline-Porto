@@ -9,12 +9,14 @@ import ShowcaseSection from "@/components/ShowcaseSection";
 import CertificateSection from "@/components/CertificateSection";
 import SnowOverlay from "@/components/SnowOverlay";
 import ParallaxScene from "@/components/ParallaxScene";
+import ScanlineOverlay from "@/components/ScanlineOverlay";
 import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
     <ParallaxScene>
       <SnowOverlay />
+      <ScanlineOverlay />
       <Navbar />
       <main>
         <section id="home"><HeroSection /></section>
