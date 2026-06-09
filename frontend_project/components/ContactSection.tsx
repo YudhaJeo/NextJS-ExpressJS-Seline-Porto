@@ -119,7 +119,7 @@ export default function ContactSection() {
             >
               <span aria-hidden />
               <div style={{ width:"100%",height:"100%",position:"relative",overflow:"hidden" }}>
-                <Image src="/Seline-Edited-2.png" alt="Jesseline Roniar" fill sizes="240px" quality={90} style={{ objectFit:"cover", objectPosition:"center top" }} priority />
+                <Image src="/Seline-Edited-4.png" alt="Jesseline Roniar" fill sizes="240px" quality={90} style={{ objectFit:"cover", objectPosition:"center top" }} priority />
                 <div aria-hidden style={{ position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 60%,rgba(60,9,108,0.7))",pointerEvents:"none" }} />
               </div>
               <div style={{ position:"absolute",bottom:"12px",left:"12px",right:"12px",background:"rgba(7,0,15,0.85)",border:"1px solid rgba(157,78,221,0.3)",padding:"8px 12px",backdropFilter:"blur(4px)" }}>

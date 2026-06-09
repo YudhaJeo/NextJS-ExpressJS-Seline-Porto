@@ -143,7 +143,7 @@ export default function HeroSection() {
             <span aria-hidden />
             <div style={{ width: "100%", height: "100%", position: "relative", overflow: "hidden", background: "rgba(60,9,108,0.3)" }}>
               <Image
-                src="/Seline-Edited-1.png"
+                src="/Seline-Edited-3.png"
                 alt="Jesseline Roniar"
                 fill
                 sizes="(max-width: 768px) 100vw, 350px"
