@@ -255,17 +255,44 @@ export default function ShowcaseSection() {
               alt={lightbox.title}
               style={{ display:"block", maxWidth:"85vw", maxHeight:"75vh", objectFit:"contain" }}
             />
-            <div style={{ padding:"12px 20px",borderTop:"1px solid rgba(157,78,221,0.2)",display:"flex",alignItems:"center",justifyContent:"space-between" }}>
+            <div style={{ padding:"12px 20px",borderTop:"1px solid rgba(157,78,221,0.2)",display:"flex",alignItems:"center",justifyContent:"space-between",gap:"12px",flexWrap:"wrap" }}>
               <div>
                 <div style={{ fontFamily:"var(--font-pixel)",fontSize:"0.32rem",color:"#ff6ef7",letterSpacing:"0.15em",marginBottom:"4px" }}>{lightbox.tag}</div>
                 <div style={{ fontFamily:"var(--font-pixel)",fontSize:"0.5rem",color:"#e8d5ff" }}>{lightbox.title}</div>
               </div>
-              <button
-                onClick={() => setLightbox(null)}
-                style={{ fontFamily:"var(--font-pixel)",fontSize:"0.4rem",padding:"6px 14px",background:"transparent",border:"1px solid rgba(255,110,247,0.4)",borderRadius:"2px",color:"#ff6ef7",cursor:"pointer",letterSpacing:"0.1em" }}
-              >
-                ✕ CLOSE
-              </button>
+              <div style={{ display:"flex",gap:"10px",alignItems:"center" }}>
+                <a
+                  href={lightbox.file}
+                  download
+                  style={{ fontFamily:"var(--font-pixel)",fontSize:"0.4rem",padding:"6px 14px",background:"rgba(157,78,221,0.2)",border:"1px solid rgba(157,78,221,0.5)",borderRadius:"2px",color:"#c77dff",cursor:"pointer",letterSpacing:"0.1em",textDecoration:"none",transition:"all 0.2s" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background  = "rgba(157,78,221,0.35)";
+                    e.currentTarget.style.borderColor = "rgba(157,78,221,0.9)";
+                    e.currentTarget.style.boxShadow   = "0 0 12px rgba(157,78,221,0.4)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background  = "rgba(157,78,221,0.2)";
+                    e.currentTarget.style.borderColor = "rgba(157,78,221,0.5)";
+                    e.currentTarget.style.boxShadow   = "none";
+                  }}
+                >
+                  ↓ DOWNLOAD
+                </a>
+                <button
+                  onClick={() => setLightbox(null)}
+                  style={{ fontFamily:"var(--font-pixel)",fontSize:"0.4rem",padding:"6px 14px",background:"transparent",border:"1px solid rgba(255,110,247,0.4)",borderRadius:"2px",color:"#ff6ef7",cursor:"pointer",letterSpacing:"0.1em",transition:"all 0.2s" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background  = "rgba(255,110,247,0.1)";
+                    e.currentTarget.style.borderColor = "rgba(255,110,247,0.8)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background  = "transparent";
+                    e.currentTarget.style.borderColor = "rgba(255,110,247,0.4)";
+                  }}
+                >
+                  ✕ CLOSE
+                </button>
+              </div>
             </div>
           </div>
         </div>
