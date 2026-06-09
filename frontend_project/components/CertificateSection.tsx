@@ -3,10 +3,12 @@
 import { useEffect, useRef } from "react";
 
 const certificates = [
-  { label:"Dicoding Financial Literacy",                   file:"/certificates/Dicoding.pdf",       icon:"📜", color:"#c77dff", badge:"DICODING" },
-  { label:"Dirjen Pendidikan Vokasi — Financial Literacy", file:"/certificates/DJPV.pdf",            icon:"📋", color:"#ff6ef7", badge:"DJPV" },
-  { label:"JHIC Certificate",                              file:"/certificates/Peserta-JHIC.pdf",    icon:"🏆", color:"#7efff5", badge:"JHIC" },
-  { label:"Semi Finalis JHIC",                             file:"/certificates/SemiFinalis-JHIC.pdf",icon:"⭐", color:"#ffd166", badge:"SEMI FINALIST" },
+  { label:"Dicoding Financial Literacy",                   file:"/certificates/Dicoding.pdf",                    icon:"📜", color:"#c77dff", badge:"DICODING" },
+  { label:"Dirjen Pendidikan Vokasi — Financial Literacy", file:"/certificates/DJPV.pdf",                        icon:"📋", color:"#ff6ef7", badge:"DJPV" },
+  { label:"JHIC Certificate",                              file:"/certificates/Peserta-JHIC.pdf",                icon:"🏆", color:"#7efff5", badge:"JHIC" },
+  { label:"Semi Finalis JHIC",                             file:"/certificates/SemiFinalis-JHIC.pdf",            icon:"⭐", color:"#ffd166", badge:"SEMI FINALIST" },
+  { label:"Game Jam 2024/2025",                            file:"/certificates/Sertifikat-GameJam-2425.pdf",     icon:"🎮", color:"#ff6ef7", badge:"GAME JAM" },
+  { label:"Game Jam Bogor 2025",                           file:"/certificates/Sertifikat-GameJam-Bogor2025.pdf",icon:"🕹️", color:"#7efff5", badge:"GAME JAM BOGOR" },
 ];
 
 export default function CertificateSection() {
@@ -49,7 +51,8 @@ export default function CertificateSection() {
           <div style={{ marginTop:"12px",width:"60px",height:"3px",background:"linear-gradient(90deg,#9d4edd,#ffd166)",boxShadow:"0 0 10px rgba(157,78,221,0.6)" }} />
         </div>
 
-        <div style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(240px,1fr))",gap:"16px" }}>
+
+        <div style={{ display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"20px" }}>
           {certificates.map((cert, i) => (
             <a
               key={cert.label}
